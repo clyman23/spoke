@@ -1,0 +1,12 @@
+name: spokenv
+
+dependencies:
+  - python=3.8
+  - pandas>=1.3
+  - geopandas
+  - numpy
+  - matplotlib
+  - pip
+  - pip:
+    - osmnx==1.1
+ 
