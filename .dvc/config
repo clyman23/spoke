@@ -1,0 +1,5 @@
+[core]
+    remote = shared_google_drive
+['remote "shared_google_drive"']
+    # This corresponds to here in Google Drive: https://drive.google.com/drive/folders/1ys4vbu5dUyoD3pb3gsjlC9WaDX6YkZWA?usp=sharing
+    url = gdrive://1ys4vbu5dUyoD3pb3gsjlC9WaDX6YkZWA
