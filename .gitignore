@@ -1,0 +1,4 @@
+# Notebooks stuff
+.ipynb_checkpoints
+notebooks/cache/*
+
