@@ -2,3 +2,5 @@
 .ipynb_checkpoints
 notebooks/cache/*
 
+# Data managed by DVC
+/data
