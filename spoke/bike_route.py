@@ -1,6 +1,8 @@
 """
 Gets the bike route between two points
 """
+from typing import List
+
 from networkx import MultiDiGraph
 import osmnx as ox
 
@@ -55,3 +57,68 @@ class BikeRoute:
             dest,
             weight="travel_time"
         )
+
+    def get_node_edges(self, node: int) -> List[tuple]:
+        """
+        Get all nodes at an edge in graph self._graph
+
+        Args:
+            node (int): The ID of a given node in the graph
+
+        Returns:
+            List[tuple]: List of tuples for each edge that meets at the node
+        """
+        in_edges = list(self._graph.in_edges(node))
+        out_edges = list(self._graph.out_edges(node))
+
+        #TODO: Could there be repeats between in- and out-edges?
+
+        return in_edges + out_edges
+
+    def get_edge_attributes(self, edge: tuple) -> dict:
+        """
+        Get the attributes of a given edge in graph self._graph
+
+        Args:
+            edge (tuple): The tuple that defines an edge
+
+        Returns:
+            dict: The attribute dictionary for a given edge. Example is:
+            {0: {
+                    'osmid': [421853954, 421853949],
+                    'oneway': True,
+                    'lanes': '5',
+                    'name': '1st Avenue',
+                    'highway': 'primary',
+                    'maxspeed': '25 mph',
+                    'length': 81.28,
+                    'geometry': <shapely.geometry.linestring.LineString at 0x7fcd2b43a670>
+            }}
+        """
+        return self._graph.get_edge_data(edge[0], edge[1])
+
+    def get_edge_road(self, edge: tuple) -> str:
+        """
+        Get the road type of a given edge
+
+        Args:
+            edge (tuple): The tuple that defines an edge
+
+        Returns:
+            str: The type of road
+        """
+        return self.get_edge_attributes(edge)[0].get("highway", "N/A")
+
+    def get_roads_at_node(self, node: int) -> List[str]:
+        """
+        Get all roads that are present (converge) at a given node in graph self._graph
+
+        Args:
+            node (int): The node ID
+
+        Returns:
+            List[str]: Road types for all edges that meet at the given node
+        """
+        all_edges = self.get_node_edges(node)
+
+        return [self.get_edge_road(edge) for edge in all_edges]
