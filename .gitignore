@@ -1,6 +1,7 @@
 # Notebooks stuff
 .ipynb_checkpoints
 notebooks/cache/*
+notebooks/*/cache/*
 
 # Data managed by DVC
 /data
