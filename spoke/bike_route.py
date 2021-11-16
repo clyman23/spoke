@@ -1,7 +1,8 @@
 """
 Gets the bike route between two points
 """
-from typing import List
+from collections import Counter
+from typing import Dict, List
 
 from networkx import MultiDiGraph
 import osmnx as ox
@@ -122,3 +123,26 @@ class BikeRoute:
         all_edges = self.get_node_edges(node)
 
         return [self.get_edge_road(edge) for edge in all_edges]
+
+    def count_road_types(self, node: int) -> Dict[str, int]:
+        """
+        Count types of roads at a node
+
+        Args:
+            node (int): The node ID
+
+        Returns:
+            Dict[str, int]: Dictionary of road types and counts
+        """
+        roads = self.get_roads_at_node(node)
+
+        # Need to unpack, because some returns from OSMnx can be a list of multiple road types
+        flat_list_roads = []
+        for sublist in roads:
+            if type(sublist)==list:
+                for item in sublist:
+                    flat_list_roads.append(item)
+            else:
+                flat_list_roads.append(sublist)
+        
+        return dict(Counter(flat_list_roads))
