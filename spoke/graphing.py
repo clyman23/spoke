@@ -37,6 +37,16 @@ def clip_northern_edge(gdf, amount=0.0003):
     
     return gdf.clip(clip_boundary)
 
+# For a given series whose index is node IDs, fill all of the missing rows in
+# with zeros for the nodes in the graph that are not in the series.
+def saturate_nodes(G, s):
+    for node_id in G.nodes:
+        if node_id in s.index:
+            continue
+        else:
+            s.loc[node_id] = 0
+    return s
+
 def get_graph_from_poly(
         poly_coords: List[Tuple[float, float]],
         network_type: str = "bike"
