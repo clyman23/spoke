@@ -9,8 +9,6 @@ DIR = sys.path[0]
 INPUT_FILE = join(DIR, '../../data/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv')
 OUTPUT_FILE = join(DIR, f'../../data/crash_data/crash_data_normalized_{TIME_PERIOD_START}-{TIME_PERIOD_END}.pkl.gz')
 
-
-
 def process():
     # Load raw data
     crash_df = pd.read_csv(INPUT_FILE, parse_dates=['CRASH DATE'], infer_datetime_format=True)
