@@ -8,18 +8,18 @@ import networkx
 import osmnx as ox
 from shapely.geometry import Polygon
 
-
-SO_34_POLY = [
-    (40.75739, -74.00591), # West 34th
-    (40.7432, -73.97139), # East 34th
-    (40.73549, -73.97182), # About East 23rd
-    (40.7283, -73.9706), # About East 16th
-    (40.7092, -73.976), # Navy Yard-ish
-    (40.7047, -73.9987), # Brooklyn Bridge-ish
-    (40.696, -74.0174), # The Battery
-    (40.7272, -74.0249), # Holland Tunnel
-    (40.75739, -74.00591), # West 34th
-]
+# Polygon defining a clipping mask for Manhattan below 34th St, in long/lat coordinates
+SO_34_POLY = Polygon([
+    (-74.00591, 40.75739), # West 34th
+    (-73.97139, 40.7432), # East 34th
+    (-73.97182, 40.73549), # About East 23rd
+    (-73.9706, 40.7283), # About East 16th
+    (-73.976, 40.7092), # Navy Yard-ish
+    (-73.9987, 40.7047), # Brooklyn Bridge-ish
+    (-74.0174, 40.696), # The Battery
+    (-74.0249, 40.7272), # Holland Tunnel
+    (-74.00591, 40.75739), # West 34th
+])
 
 
 def get_graph_from_poly(
