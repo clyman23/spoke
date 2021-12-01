@@ -5,6 +5,7 @@ from typing import List, Tuple
 
 from networkx import MultiDiGraph
 import networkx
+import numpy as np
 import osmnx as ox
 from shapely.geometry import Polygon
 
@@ -21,6 +22,20 @@ SO_34_POLY = Polygon([
     (-74.00591, 40.75739), # West 34th
 ])
 
+def clip_northern_edge(gdf, amount=0.0003):
+    '''
+    Function that will clip the northern nodes that fall within `meters` meters
+    of the "northern" edge of the map. This is expected to be used on a map of
+    Manhattan and so "north" actually means 30 degrees clockwise from true
+    north. Useful for reducing edge effects on the northern edge of the map.
+    '''
+    from shapely.affinity import translate
+
+    offset = -amount
+    mnh_street_angle = np.pi / 6 # Manhattan's streets are about 30 degrees off of true north.
+    clip_boundary = translate(SO_34_POLY, yoff=offset, xoff=np.sin(mnh_street_angle) * offset)
+    
+    return gdf.clip(clip_boundary)
 
 def get_graph_from_poly(
         poly_coords: List[Tuple[float, float]],
