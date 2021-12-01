@@ -15,9 +15,5 @@ def load_normalized_crash_gdf(with_nodes=True):
         df = pd.read_csv('../../data/crash_data_normalized.csv')
     return gpd.GeoDataFrame(data=df, geometry=gpd.points_from_xy(df.LONGITUDE, df.LATITUDE), crs='EPSG:4326')
 
-def load_normalized_crash_gdf_with_nodes():
-    df = pd.read_csv('../../data/crash_data_normalized.csv')
-    return gpd.GeoDataFrame(data=df, geometry=gpd.points_from_xy(df.LONGITUDE, df.LATITUDE), crs='EPSG:4326')
-
 def load_danger_df():
     return pd.read_pickle('../../data/consolidated_danger_by_node_id.pkl.gz')
