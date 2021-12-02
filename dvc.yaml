@@ -43,3 +43,22 @@ stages:
             - pipeline_data/trip_data_normalized.pkl.gz
         outs:
             - pipeline_data/unified_dataset.pkl.gz
+    associate_ctas_to_nodes:
+        desc: Generate a lookup table for nodes and census tracts
+        cmd: python spoke/data_processing/06_associate_ctas_to_nodes.py
+        deps:
+            - pipeline_data/target_map.graphml
+            - pipeline_data/raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
+            - pipeline_data/unified_dataset.pkl.gz
+        outs: 
+            - pipeline_data/node_id_census_tract_key.pkl.gz
+    compute_danger:
+        desc: 'Compute danger metric'
+        cmd: python spoke/data_processing/07_compute_danger.py
+        deps:
+            - pipeline_data/target_map.graphml
+            - pipeline_data/node_id_census_tract_key.pkl.gz
+            - pipeline_data/unified_dataset.pkl.gz
+        outs:
+            - pipeline_data/target_map_consolidated.graphml
+            - pipeline_data/danger_by_node_id.pkl.gz

@@ -70,3 +70,38 @@ stages:
     - path: pipeline_data/target_map.graphml
       md5: 16cb4106cc15aeca78fc63d28d1674a1
       size: 2696141
+  associate_ctas_to_nodes:
+    cmd: python spoke/data_processing/06_associate_ctas_to_nodes.py
+    deps:
+    - path: pipeline_data/raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
+      md5: 0f6d2a4aaedc2e12f3db25f99d3f759e
+      size: 2802360
+    - path: pipeline_data/target_map.graphml
+      md5: 16cb4106cc15aeca78fc63d28d1674a1
+      size: 2696141
+    - path: pipeline_data/unified_dataset.pkl.gz
+      md5: 80096a33ffdd9bc3b6079a44eee25013
+      size: 1420039
+    outs:
+    - path: pipeline_data/node_id_census_tract_key.pkl.gz
+      md5: 192ee165a803e5f1a4e5b7ff2b988149
+      size: 8948
+  compute_danger:
+    cmd: python spoke/data_processing/07_compute_danger.py
+    deps:
+    - path: pipeline_data/node_id_census_tract_key.pkl.gz
+      md5: 192ee165a803e5f1a4e5b7ff2b988149
+      size: 8948
+    - path: pipeline_data/target_map.graphml
+      md5: 16cb4106cc15aeca78fc63d28d1674a1
+      size: 2696141
+    - path: pipeline_data/unified_dataset.pkl.gz
+      md5: 80096a33ffdd9bc3b6079a44eee25013
+      size: 1420039
+    outs:
+    - path: pipeline_data/danger_by_node_id.pkl.gz
+      md5: 458841d43d41bedcb46e651aa409a7fa
+      size: 23169
+    - path: pipeline_data/target_map_consolidated.graphml
+      md5: d9ee3107748fa54d526fcee0549f0df0
+      size: 2396203
