@@ -1,0 +1,12 @@
+time_period_start: '2019-01-01'
+time_period_end: '2019-12-31'
+# The distance, in meters, that a crash must be within to a node in the street
+# network for the node to be considered for attribution.
+crash_threshold_dist_m: 100
+# The clipping boundary used to generate the base map. See
+# data_processing/00_create_map.py for a definition of the available values for
+# this
+map_clipping_boundary: mnh_below_34th
+# The number of trips to sample from the overall trip dataset when computing
+# routes
+trip_sample_size: 10_000
