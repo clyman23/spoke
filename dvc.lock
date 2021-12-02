@@ -12,58 +12,59 @@ stages:
       md5: c0b0cc348c880f5df20150d175a59612
       size: 10916
   normalize_citibike_data:
-    cmd: python spoke/data_processing/04_normalizing_citibike_data.py
+    cmd: python spoke/data_processing/04_normalizing_citibike_data.py 2019-01-01 2019-12-31
+      100 10000
     deps:
-    - path: pipeline_data/raw_data/citibike/
+    - path: pipeline_data//raw_data/citibike/
       md5: b6ae53a779ce6556f3a4587ebcab0f06.dir
       size: 2464917000
       nfiles: 33
-    - path: pipeline_data/target_map.graphml
-      md5: aca95a0fb24b92963e92f0130053eeae
+    - path: pipeline_data//target_map.graphml
+      md5: d5c951ff7c6e000c448628422b3ca951
       size: 2696141
     outs:
-    - path: pipeline_data/trip_data_normalized.pkl.gz
-      md5: e439dc22f2737935f55650ab95c8b720
+    - path: pipeline_data//trip_data_normalized.pkl.gz
+      md5: 329fb55733ec801c4cb02f1b69a12d1a
       size: 1704451
   normalize_crash_data:
-    cmd: python spoke/data_processing/02_normalizing_crash_data.py
+    cmd: python spoke/data_processing/02_normalizing_crash_data.py 2019-01-01 2019-12-31
     deps:
     - path: pipeline_data//raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
       md5: 84bd8d0baf1943f1f3bfe319f420a176
       size: 395108006
     outs:
     - path: pipeline_data//crash_data_normalized.pkl.gz
-      md5: 76dfa6030b04d148a3355e6180e02d44
-      size: 1434809
+      md5: 3bbfb3ce5fa81fdf18bc5dfffe5e5d2d
+      size: 591322
   join_crash_data_to_nodes:
-    cmd: python spoke/data_processing/03_joining_crash_data_to_nodes.py
+    cmd: python spoke/data_processing/03_joining_crash_data_to_nodes.py 100
     deps:
-    - path: pipeline_data/crash_data_normalized.pkl.gz
-      md5: a5cc79ebe638ab106bdd11d483b4dc76
-      size: 1434809
-    - path: pipeline_data/target_map.graphml
-      md5: aca95a0fb24b92963e92f0130053eeae
+    - path: pipeline_data//crash_data_normalized.pkl.gz
+      md5: 3bbfb3ce5fa81fdf18bc5dfffe5e5d2d
+      size: 591322
+    - path: pipeline_data//target_map.graphml
+      md5: d5c951ff7c6e000c448628422b3ca951
       size: 2696141
     outs:
-    - path: pipeline_data/crash_data_normalized_with_node_graph.pkl.gz
-      md5: da3e4b326c1c5c8579d95ea1d3a78cd4
-      size: 174511
+    - path: pipeline_data//crash_data_normalized_with_node_graph.pkl.gz
+      md5: dfdfdf2a6dafcb296b3f0660a2f92459
+      size: 88377
   join_all_data:
     cmd: python spoke/data_processing/05_joining_all_data.py
     deps:
-    - path: pipeline_data/crash_data_normalized_with_node_graph.pkl.gz
-      md5: da3e4b326c1c5c8579d95ea1d3a78cd4
-      size: 174511
-    - path: pipeline_data/trip_data_normalized.pkl.gz
-      md5: e439dc22f2737935f55650ab95c8b720
+    - path: pipeline_data//crash_data_normalized_with_node_graph.pkl.gz
+      md5: dfdfdf2a6dafcb296b3f0660a2f92459
+      size: 88377
+    - path: pipeline_data//trip_data_normalized.pkl.gz
+      md5: 329fb55733ec801c4cb02f1b69a12d1a
       size: 1704451
-    - path: pipeline_data/weather_data_normalized.pkl.gz
-      md5: eb67160e552b0c66e1a1ee175b3a3f54
-      size: 76996
+    - path: pipeline_data//weather_data_normalized.pkl.gz
+      md5: c0b0cc348c880f5df20150d175a59612
+      size: 10916
     outs:
-    - path: pipeline_data/unified_dataset.pkl.gz
-      md5: 375e963f14d04ded758bb784db385a4e
-      size: 1420039
+    - path: pipeline_data//unified_dataset.pkl.gz
+      md5: 546403d2f09e1cf1b1d3b450d83440b1
+      size: 1357936
   create_map:
     cmd: python spoke/data_processing/00_create_map.py mnh_below_34th
     outs:
@@ -73,44 +74,44 @@ stages:
   associate_ctas_to_nodes:
     cmd: python spoke/data_processing/06_associate_ctas_to_nodes.py
     deps:
-    - path: pipeline_data/raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
+    - path: pipeline_data//raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
       md5: 0f6d2a4aaedc2e12f3db25f99d3f759e
       size: 2802360
-    - path: pipeline_data/target_map.graphml
-      md5: aca95a0fb24b92963e92f0130053eeae
+    - path: pipeline_data//target_map.graphml
+      md5: d5c951ff7c6e000c448628422b3ca951
       size: 2696141
-    - path: pipeline_data/unified_dataset.pkl.gz
-      md5: 375e963f14d04ded758bb784db385a4e
-      size: 1420039
+    - path: pipeline_data//unified_dataset.pkl.gz
+      md5: 546403d2f09e1cf1b1d3b450d83440b1
+      size: 1357936
     outs:
-    - path: pipeline_data/node_id_census_tract_key.pkl.gz
-      md5: b2635c3712d237d66bf3c5ab50d16658
+    - path: pipeline_data//node_id_census_tract_key.pkl.gz
+      md5: f5af72ebae0e8b255f308f68681b9023
       size: 8948
   compute_danger:
     cmd: python spoke/data_processing/07_compute_danger.py
     deps:
-    - path: pipeline_data/node_id_census_tract_key.pkl.gz
-      md5: b2635c3712d237d66bf3c5ab50d16658
+    - path: pipeline_data//node_id_census_tract_key.pkl.gz
+      md5: f5af72ebae0e8b255f308f68681b9023
       size: 8948
-    - path: pipeline_data/target_map.graphml
-      md5: aca95a0fb24b92963e92f0130053eeae
+    - path: pipeline_data//target_map.graphml
+      md5: d5c951ff7c6e000c448628422b3ca951
       size: 2696141
-    - path: pipeline_data/unified_dataset.pkl.gz
-      md5: 375e963f14d04ded758bb784db385a4e
-      size: 1420039
+    - path: pipeline_data//unified_dataset.pkl.gz
+      md5: 546403d2f09e1cf1b1d3b450d83440b1
+      size: 1357936
     outs:
-    - path: pipeline_data/danger_by_node_id.pkl.gz
-      md5: f4d5a043fb88309bb576f1945015b8f9
-      size: 23169
-    - path: pipeline_data/target_map_consolidated.graphml
-      md5: d7853510f5c6b5d9f20e0fb2c1a5081a
+    - path: pipeline_data//danger_by_node_id.pkl.gz
+      md5: 2a411ed8f1a41f876538344e64c68261
+      size: 21394
+    - path: pipeline_data//target_map_consolidated.graphml
+      md5: de26a2d2e862c7c50ac4cf16dbb3ef4a
       size: 2396203
   generate_heatmaps:
     cmd: python spoke/data_processing/08_generate_heatmaps.py
     deps:
-    - path: pipeline_data/danger_by_node_id.pkl.gz
-      md5: f4d5a043fb88309bb576f1945015b8f9
-      size: 23169
-    - path: pipeline_data/target_map_consolidated.graphml
-      md5: d7853510f5c6b5d9f20e0fb2c1a5081a
+    - path: pipeline_data//danger_by_node_id.pkl.gz
+      md5: 2a411ed8f1a41f876538344e64c68261
+      size: 21394
+    - path: pipeline_data//target_map_consolidated.graphml
+      md5: de26a2d2e862c7c50ac4cf16dbb3ef4a
       size: 2396203

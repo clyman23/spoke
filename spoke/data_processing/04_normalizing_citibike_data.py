@@ -8,26 +8,29 @@ import pandas as pd
 from dask.diagnostics import ProgressBar
 from networkx import NetworkXNoPath
 from tqdm import tqdm
+from datetime import datetime
 
 INPUT_FILE_GRAPH = "pipeline_data/target_map.graphml"
 INPUT_FILE_PREFIX = "pipeline_data/raw_data/citibike/"
-INPUT_FILE_GLOB = "2019*.csv.zip"
+
 OUTPUT_FILE = "pipeline_data/trip_data_normalized.pkl.gz"
 
-TRIP_SAMPLE_SIZE = 10_000
+def load_input_data(time_period_start, time_period_end):
+    start_year = datetime.strptime(time_period_start, '%Y-%m-%d').year
+    end_year = datetime.strptime(time_period_end, '%Y-%m-%d').year
 
-
-def load_input_data():
     trip_df = pd.DataFrame()
-    for zipfile in Path(INPUT_FILE_PREFIX).glob(INPUT_FILE_GLOB):
-        with ZipFile(zipfile) as zf:
-            for file in zf.infolist():
-                if file.filename.endswith(".csv") and not file.filename.startswith(
-                    "__"
-                ):
-                    print(file.filename)
-                    trip_df = pd.concat((trip_df, pd.read_csv(zf.open(file.filename))))
-    return trip_df.reset_index()
+    for year in range(start_year, end_year + 1):
+        glob = f'{year}*.csv.zip'
+        for zipfile in Path(INPUT_FILE_PREFIX).glob(glob):
+            with ZipFile(zipfile) as zf:
+                for file in zf.infolist():
+                    if file.filename.endswith(".csv") and not file.filename.startswith(
+                        "__"
+                    ):
+                        print(file.filename)
+                        trip_df = pd.concat((trip_df, pd.read_csv(zf.open(file.filename))))
+    return trip_df.query('starttime >= @time_period_start & stoptime <= @time_period_end').reset_index()
 
 
 def get_all_stations(trip_df):
@@ -55,10 +58,9 @@ def get_all_stations(trip_df):
     return all_stations
 
 
-def pair_stations_with_nodes(all_stations, G):
+def pair_stations_with_nodes(all_stations, G, trip_threshold_dist_m):
     # This is the distance from a trip start or endpoint to its nearest node beyond which we assume
     # that the crash occurred outside of our graph and isn't really matched to that node.
-    THRESHOLD_DIST_M = 100
     nearest_nodes = pd.DataFrame(
         columns=[
             "NODE_ID",
@@ -72,7 +74,7 @@ def pair_stations_with_nodes(all_stations, G):
         nn_id, dist = ox.distance.nearest_nodes(
             G, station.station_longitude, station.station_latitude, return_dist=True
         )
-        if dist > THRESHOLD_DIST_M:
+        if dist > trip_threshold_dist_m:
             continue
         nn = G.nodes[nn_id]
         nearest_nodes.loc[i] = {
@@ -87,9 +89,9 @@ def pair_stations_with_nodes(all_stations, G):
     return stations_with_nodes
 
 
-def generate_node_events_for_trips(trip_df_in_area, stations_with_nodes, G):
+def generate_node_events_for_trips(trip_df_in_area, stations_with_nodes, G, trip_sample_size):
     df = dd.from_pandas(
-        trip_df_in_area.sample(n=TRIP_SAMPLE_SIZE, random_state=42), chunksize=1000
+        trip_df_in_area.sample(n=trip_sample_size, random_state=42), chunksize=1000
     )
 
     trips_with_no_paths = []
@@ -121,13 +123,13 @@ def generate_node_events_for_trips(trip_df_in_area, stations_with_nodes, G):
     return pd.concat(result)
 
 
-def process():
-    trip_df = load_input_data()
+def process(time_period_start, time_period_end, trip_threshold_dist_m, trip_sample_size):
+    trip_df = load_input_data(time_period_start, time_period_end)
     G = ox.io.load_graphml(INPUT_FILE_GRAPH)
     # Get the list of all unique Citibike stations referenced by the trip records we have
     all_stations = get_all_stations(trip_df)
     # Filter out all of the stations that don't have a corresponding node in the graph
-    stations_with_nodes = pair_stations_with_nodes(all_stations, G)
+    stations_with_nodes = pair_stations_with_nodes(all_stations, G, trip_threshold_dist_m)
     # Filter out all of the trips that didn't start or end at a station in the graph
     trip_df_in_area = trip_df[
         trip_df["end station id"].isin(stations_with_nodes.index)
@@ -135,7 +137,7 @@ def process():
     ]
 
     trips_with_nodes = generate_node_events_for_trips(
-        trip_df_in_area, stations_with_nodes, G
+        trip_df_in_area, stations_with_nodes, G, trip_sample_size
     )
     all_nodes_with_trip_info = pd.merge(
         trips_with_nodes, trip_df_in_area, left_on="TRIP_ID", right_index=True
@@ -145,5 +147,12 @@ def process():
 
 
 if __name__ == "__main__":
-    df = process()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('time_period_start')
+    parser.add_argument('time_period_end')
+    parser.add_argument('trip_threshold_dist_m', type=int)
+    parser.add_argument('trip_sample_size', type=int)
+    args = parser.parse_args()
+    df = process(args.time_period_start, args.time_period_end, args.trip_threshold_dist_m, args.trip_sample_size)
     df.to_pickle(OUTPUT_FILE)
