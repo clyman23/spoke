@@ -1,32 +1,32 @@
-import pandas as pd
-import osmnx as ox
-import numpy as np
-from networkx import NetworkXNoPath
-from tqdm import tqdm
+import sys
+from os.path import abspath, dirname, join
 from pathlib import Path
 from zipfile import ZipFile
-import dask.dataframe as dd
-from dask.diagnostics import ProgressBar
 
-from os.path import join, abspath, dirname
-import sys
+import dask.dataframe as dd
+import numpy as np
+import osmnx as ox
+import pandas as pd
+from dask.diagnostics import ProgressBar
+from networkx import NetworkXNoPath
+from tqdm import tqdm
 
 DIR = sys.path[0] if __name__ == '__main__' else dirname(__loader__.path)
 
 module_path = abspath(join(DIR, '../..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
-    
-from spoke.datasets import load_mnh_below_34th
 
-OUTPUT_FILE = join(DIR, '../../data/trip_data/trip_data_normalized.pkl.gz')
-
+INPUT_FILE_GRAPH = abspath(join(DIR, '../../pipeline_data/target_map.graphml'))
+INPUT_FILE_PREFIX = abspath(join(DIR, '../../pipeline_data/raw_data/citibike/'))
+INPUT_FILE_GLOB = '2019*.csv.zip'
+OUTPUT_FILE = join(DIR, '../../pipeline_data/trip_data_normalized.pkl.gz')
 TRIP_SAMPLE_SIZE=10_000
 
 def load_input_data():
     trip_df = pd.DataFrame()
-    data_path = Path(abspath(join(DIR, '../../data/raw_data/citibike/')))
-    for zipfile in data_path.glob('2019*.csv.zip'):
+    data_path = Path(INPUT_FILE_PREFIX)
+    for zipfile in data_path.glob(INPUT_FILE_GLOB):
         with ZipFile(data_path / zipfile) as zf:
             for file in zf.infolist():
                 if file.filename.endswith('.csv') and not file.filename.startswith('__'):
@@ -101,7 +101,7 @@ def generate_node_events_for_trips(trip_df_in_area, stations_with_nodes, G):
 
 def process():
     trip_df = load_input_data()
-    G = load_mnh_below_34th()
+    G = ox.io.load_graphml(INPUT_FILE_GRAPH)
     # Get the list of all unique Citibike stations referenced by the trip records we have
     all_stations = get_all_stations(trip_df)
     # Filter out all of the stations that don't have a corresponding node in the graph

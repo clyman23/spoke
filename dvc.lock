@@ -1,0 +1,72 @@
+schema: '2.0'
+stages:
+  normalize_weather_data:
+    cmd: python spoke/data_processing/01_normalizing_weather_data.py
+    deps:
+    - path: pipeline_data/raw_data/weather/
+      md5: f67235592662850f4b0856767095f685.dir
+      size: 24203989
+      nfiles: 4
+    outs:
+    - path: pipeline_data/weather_data_normalized.pkl.gz
+      md5: f7635f5c32623b3704a065f74572eb6e
+      size: 76996
+  normalize_citibike_data:
+    cmd: python spoke/data_processing/04_normalizing_citibike_data.py
+    deps:
+    - path: pipeline_data/raw_data/citibike/
+      md5: b6ae53a779ce6556f3a4587ebcab0f06.dir
+      size: 2464917000
+      nfiles: 33
+    - path: pipeline_data/target_map.graphml
+      md5: 16cb4106cc15aeca78fc63d28d1674a1
+      size: 2696141
+    outs:
+    - path: pipeline_data/trip_data_normalized.pkl.gz
+      md5: d200b57be646a1784e88ec1a3ba4fbb3
+      size: 1704451
+  normalize_crash_data:
+    cmd: python spoke/data_processing/02_normalizing_crash_data.py
+    deps:
+    - path: pipeline_data/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
+      md5: 84bd8d0baf1943f1f3bfe319f420a176
+      size: 395108006
+    outs:
+    - path: pipeline_data/crash_data_normalized.pkl.gz
+      md5: 12881ce6e9491dba20d25c6d5ff5768e
+      size: 1434809
+  join_crash_data_to_nodes:
+    cmd: python spoke/data_processing/03_joining_crash_data_to_nodes.py
+    deps:
+    - path: pipeline_data/crash_data_normalized.pkl.gz
+      md5: 12881ce6e9491dba20d25c6d5ff5768e
+      size: 1434809
+    - path: pipeline_data/target_map.graphml
+      md5: 16cb4106cc15aeca78fc63d28d1674a1
+      size: 2696141
+    outs:
+    - path: pipeline_data/crash_data_normalized_with_node_graph.pkl.gz
+      md5: c8d7d3439a2d47a5889d5f7ac40dc382
+      size: 174511
+  join_all_data:
+    cmd: python spoke/data_processing/05_joining_all_data.py
+    deps:
+    - path: pipeline_data/crash_data_normalized_with_node_graph.pkl.gz
+      md5: c8d7d3439a2d47a5889d5f7ac40dc382
+      size: 174511
+    - path: pipeline_data/trip_data_normalized.pkl.gz
+      md5: d200b57be646a1784e88ec1a3ba4fbb3
+      size: 1704451
+    - path: pipeline_data/weather_data_normalized.pkl.gz
+      md5: f7635f5c32623b3704a065f74572eb6e
+      size: 76996
+    outs:
+    - path: pipeline_data/unified_dataset.pkl.gz
+      md5: 80096a33ffdd9bc3b6079a44eee25013
+      size: 1420039
+  create_map:
+    cmd: python spoke/data_processing/00_create_map.py
+    outs:
+    - path: pipeline_data/target_map.graphml
+      md5: 16cb4106cc15aeca78fc63d28d1674a1
+      size: 2696141

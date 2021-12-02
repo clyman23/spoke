@@ -1,25 +1,26 @@
-import pandas as pd
+import sys
+from os.path import abspath, join
+
 import osmnx as ox
+import pandas as pd
 from tqdm import tqdm
 
-from os.path import join, abspath
-import sys
-
-DIR = sys.path[0]
+DIR = sys.path[0] if __name__ == '__main__' else dirname(__loader__.path)
 
 module_path = abspath(join(DIR, '../..'))
 if module_path not in sys.path:
     sys.path.append(module_path)
-    
-from spoke.datasets import load_mnh_below_34th, load_normalized_crash_gdf
+
 from spoke.graphing import saturate_nodes
 
-OUTPUT_FILE = join(DIR, '../../data/crash_data/crash_data_normalized_with_node_graph.pkl.gz')
+INPUT_FILE_GRAPH = abspath(join(DIR, '../../pipeline_data/target_map.graphml'))
+INPUT_FILE_CRASHES = abspath(join(DIR, '../../pipeline_data/crash_data_normalized.pkl.gz'))
+OUTPUT_FILE = abspath(join(DIR, '../../pipeline_data/crash_data_normalized_with_node_graph.pkl.gz'))
 
 def process():
     # We load the graph and the normalized set of crashes
-    G = load_mnh_below_34th()
-    crash_df = load_normalized_crash_gdf(with_nodes=False)
+    G = ox.io.load_graphml(INPUT_FILE_GRAPH)
+    crash_df = pd.read_pickle(INPUT_FILE_CRASHES)
 
     # This is the distance from a crash to its nearest node beyond which we assume
     # that the crash occurred outside of our graph and isn't really matched to that node.

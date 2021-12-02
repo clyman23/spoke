@@ -1,23 +1,20 @@
-import pandas as pd
-
-from os.path import join, abspath
 import sys
+from os.path import abspath, dirname, join
+from pathlib import Path
+
+import pandas as pd
 
 TIME_PERIOD_START = '2019-01-01'
 TIME_PERIOD_END = '2021-10-31'
 
-DIR = sys.path[0]
-INPUT_FILES = [
-    abspath(join(DIR, p)) for p in (
-    '../../data/raw_data/weather/weather_data_2013-01-01_2013-06-30.csv',
-    '../../data/raw_data/weather/weather_data_2013-07-01_2015-12-31.csv',
-    '../../data/raw_data/weather/weather_data_2016-01-01_2018-06-30.csv',
-    '../../data/raw_data/weather/weather_data_2018-07-01_2021-10-31.csv')
-]
-OUTPUT_FILE = join(DIR, f'../../data/weather_data/weather_data_normalized_{TIME_PERIOD_START}-{TIME_PERIOD_END}.pkl.gz')
+DIR = sys.path[0] if __name__ == '__main__' else dirname(__loader__.path)
+
+INPUT_FILE_PREFIX = abspath(join(DIR, '../../pipeline_data/raw_data/weather/'))
+INPUT_FILE_GLOB = '*.csv'
+OUTPUT_FILE = abspath(join(DIR, f'../../pipeline_data/weather_data_normalized.pkl.gz'))
 
 def process():
-    weather_df = pd.concat((pd.read_csv(f) for f in INPUT_FILES))
+    weather_df = pd.concat((pd.read_csv(f) for f in Path(INPUT_FILE_PREFIX).glob(INPUT_FILE_GLOB)))
     
     weather_df_by_date = weather_df.groupby('DATE').mean()
     
