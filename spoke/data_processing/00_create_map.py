@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 from spoke.graphing import SO_34_POLY
 
-OUTPUT_FILE = "pipeline_data/target_map.graphml"
+OUTPUT_FILE = "target_map.graphml"
 
 CLIPPING_BOUNDARIES = {
     'mnh_below_34th': SO_34_POLY

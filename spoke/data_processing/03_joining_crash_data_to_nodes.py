@@ -4,9 +4,9 @@ from tqdm import tqdm
 
 from spoke.graphing import saturate_nodes
 
-INPUT_FILE_GRAPH = "pipeline_data/target_map.graphml"
-INPUT_FILE_CRASHES = "pipeline_data/crash_data_normalized.pkl.gz"
-OUTPUT_FILE = "pipeline_data/crash_data_normalized_with_node_graph.pkl.gz"
+INPUT_FILE_GRAPH = "target_map.graphml"
+INPUT_FILE_CRASHES = "crash_data_normalized.pkl.gz"
+OUTPUT_FILE = "crash_data_normalized_with_node_graph.pkl.gz"
 
 def process(crash_threshold_dist_m):
     # We load the graph and the normalized set of crashes

@@ -2,12 +2,9 @@ from pathlib import Path
 
 import pandas as pd
 
-TIME_PERIOD_START = "2019-01-01"
-TIME_PERIOD_END = "2021-10-31"
-
-INPUT_FILE_PREFIX = "pipeline_data/raw_data/weather/"
+INPUT_FILE_PREFIX = "../raw_data/weather/"
 INPUT_FILE_GLOB = "*.csv"
-OUTPUT_FILE = "pipeline_data/weather_data_normalized.pkl.gz"
+OUTPUT_FILE = "weather_data_normalized.pkl.gz"
 
 
 def process(time_period_start, time_period_end):

@@ -1,117 +1,119 @@
 schema: '2.0'
 stages:
   normalize_weather_data:
-    cmd: python spoke/data_processing/01_normalizing_weather_data.py 2019-01-01 2019-12-31
+    cmd: python ../../spoke/data_processing/01_normalizing_weather_data.py 2019-01-01
+      2019-12-31
     deps:
-    - path: pipeline_data//raw_data/weather/
+    - path: ../raw_data/weather/
       md5: f67235592662850f4b0856767095f685.dir
       size: 24203989
       nfiles: 4
     outs:
-    - path: pipeline_data//weather_data_normalized.pkl.gz
-      md5: c0b0cc348c880f5df20150d175a59612
+    - path: weather_data_normalized.pkl.gz
+      md5: 10cebf0be330be5ba61c9ad936958650
       size: 10916
   normalize_citibike_data:
-    cmd: python spoke/data_processing/04_normalizing_citibike_data.py 2019-01-01 2019-12-31
-      100 10000
+    cmd: python ../../spoke/data_processing/04_normalizing_citibike_data.py 2019-01-01
+      2019-12-31 100 10000
     deps:
-    - path: pipeline_data//raw_data/citibike/
+    - path: ../raw_data/citibike/
       md5: b6ae53a779ce6556f3a4587ebcab0f06.dir
       size: 2464917000
       nfiles: 33
-    - path: pipeline_data//target_map.graphml
-      md5: d5c951ff7c6e000c448628422b3ca951
+    - path: target_map.graphml
+      md5: 27031ccc65677d649ac69a0194c338e2
       size: 2696141
     outs:
-    - path: pipeline_data//trip_data_normalized.pkl.gz
-      md5: 329fb55733ec801c4cb02f1b69a12d1a
-      size: 1704451
+    - path: trip_data_normalized.pkl.gz
+      md5: f344408426ebf34a790d4d51fb6d0061
+      size: 1702594
   normalize_crash_data:
-    cmd: python spoke/data_processing/02_normalizing_crash_data.py 2019-01-01 2019-12-31
+    cmd: python ../../spoke/data_processing/02_normalizing_crash_data.py 2019-01-01
+      2019-12-31
     deps:
-    - path: pipeline_data//raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
+    - path: ../raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
       md5: 84bd8d0baf1943f1f3bfe319f420a176
       size: 395108006
     outs:
-    - path: pipeline_data//crash_data_normalized.pkl.gz
-      md5: 3bbfb3ce5fa81fdf18bc5dfffe5e5d2d
+    - path: crash_data_normalized.pkl.gz
+      md5: 69fcc12ea38e758c632b9e8ab6e1f21b
       size: 591322
   join_crash_data_to_nodes:
-    cmd: python spoke/data_processing/03_joining_crash_data_to_nodes.py 100
+    cmd: python ../../spoke/data_processing/03_joining_crash_data_to_nodes.py 100
     deps:
-    - path: pipeline_data//crash_data_normalized.pkl.gz
-      md5: 3bbfb3ce5fa81fdf18bc5dfffe5e5d2d
+    - path: crash_data_normalized.pkl.gz
+      md5: 69fcc12ea38e758c632b9e8ab6e1f21b
       size: 591322
-    - path: pipeline_data//target_map.graphml
-      md5: d5c951ff7c6e000c448628422b3ca951
+    - path: target_map.graphml
+      md5: 27031ccc65677d649ac69a0194c338e2
       size: 2696141
     outs:
-    - path: pipeline_data//crash_data_normalized_with_node_graph.pkl.gz
-      md5: dfdfdf2a6dafcb296b3f0660a2f92459
+    - path: crash_data_normalized_with_node_graph.pkl.gz
+      md5: a4c9995592fce27e1baf5c24c64cedf3
       size: 88377
   join_all_data:
-    cmd: python spoke/data_processing/05_joining_all_data.py
+    cmd: python ../../spoke/data_processing/05_joining_all_data.py
     deps:
-    - path: pipeline_data//crash_data_normalized_with_node_graph.pkl.gz
-      md5: dfdfdf2a6dafcb296b3f0660a2f92459
+    - path: crash_data_normalized_with_node_graph.pkl.gz
+      md5: a4c9995592fce27e1baf5c24c64cedf3
       size: 88377
-    - path: pipeline_data//trip_data_normalized.pkl.gz
-      md5: 329fb55733ec801c4cb02f1b69a12d1a
-      size: 1704451
-    - path: pipeline_data//weather_data_normalized.pkl.gz
-      md5: c0b0cc348c880f5df20150d175a59612
+    - path: trip_data_normalized.pkl.gz
+      md5: f344408426ebf34a790d4d51fb6d0061
+      size: 1702594
+    - path: weather_data_normalized.pkl.gz
+      md5: 10cebf0be330be5ba61c9ad936958650
       size: 10916
     outs:
-    - path: pipeline_data//unified_dataset.pkl.gz
-      md5: 546403d2f09e1cf1b1d3b450d83440b1
-      size: 1357936
+    - path: unified_dataset.pkl.gz
+      md5: 12c43e67600d01b0ce87d9c186414172
+      size: 1357913
   create_map:
-    cmd: python spoke/data_processing/00_create_map.py mnh_below_34th
+    cmd: python ../../spoke/data_processing/00_create_map.py mnh_below_34th
     outs:
-    - path: pipeline_data//target_map.graphml
-      md5: d5c951ff7c6e000c448628422b3ca951
+    - path: target_map.graphml
+      md5: 27031ccc65677d649ac69a0194c338e2
       size: 2696141
   associate_ctas_to_nodes:
-    cmd: python spoke/data_processing/06_associate_ctas_to_nodes.py
+    cmd: python ../../spoke/data_processing/06_associate_ctas_to_nodes.py
     deps:
-    - path: pipeline_data//raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
+    - path: ../raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
       md5: 0f6d2a4aaedc2e12f3db25f99d3f759e
       size: 2802360
-    - path: pipeline_data//target_map.graphml
-      md5: d5c951ff7c6e000c448628422b3ca951
+    - path: target_map.graphml
+      md5: 27031ccc65677d649ac69a0194c338e2
       size: 2696141
-    - path: pipeline_data//unified_dataset.pkl.gz
-      md5: 546403d2f09e1cf1b1d3b450d83440b1
-      size: 1357936
+    - path: unified_dataset.pkl.gz
+      md5: 12c43e67600d01b0ce87d9c186414172
+      size: 1357913
     outs:
-    - path: pipeline_data//node_id_census_tract_key.pkl.gz
-      md5: f5af72ebae0e8b255f308f68681b9023
+    - path: node_id_census_tract_key.pkl.gz
+      md5: da9edc12e1ae2290a462c9b1d413e571
       size: 8948
   compute_danger:
-    cmd: python spoke/data_processing/07_compute_danger.py
+    cmd: python ../../spoke/data_processing/07_compute_danger.py
     deps:
-    - path: pipeline_data//node_id_census_tract_key.pkl.gz
-      md5: f5af72ebae0e8b255f308f68681b9023
+    - path: node_id_census_tract_key.pkl.gz
+      md5: 54ee140b974a83495a4aa4e5e6b219ef
       size: 8948
-    - path: pipeline_data//target_map.graphml
-      md5: d5c951ff7c6e000c448628422b3ca951
+    - path: target_map.graphml
+      md5: 27031ccc65677d649ac69a0194c338e2
       size: 2696141
-    - path: pipeline_data//unified_dataset.pkl.gz
-      md5: 546403d2f09e1cf1b1d3b450d83440b1
-      size: 1357936
+    - path: unified_dataset.pkl.gz
+      md5: 12c43e67600d01b0ce87d9c186414172
+      size: 1357913
     outs:
-    - path: pipeline_data//danger_by_node_id.pkl.gz
-      md5: 2a411ed8f1a41f876538344e64c68261
-      size: 21394
-    - path: pipeline_data//target_map_consolidated.graphml
-      md5: de26a2d2e862c7c50ac4cf16dbb3ef4a
+    - path: danger_by_node_id.pkl.gz
+      md5: 5fdd2e436dfe56d19ece49070180d439
+      size: 21428
+    - path: target_map_consolidated.graphml
+      md5: d0e771646b98acd7c0cbf288207778df
       size: 2396203
   generate_heatmaps:
-    cmd: python spoke/data_processing/08_generate_heatmaps.py
+    cmd: python ../../spoke/data_processing/08_generate_heatmaps.py
     deps:
-    - path: pipeline_data//danger_by_node_id.pkl.gz
-      md5: 2a411ed8f1a41f876538344e64c68261
-      size: 21394
-    - path: pipeline_data//target_map_consolidated.graphml
-      md5: de26a2d2e862c7c50ac4cf16dbb3ef4a
+    - path: danger_by_node_id.pkl.gz
+      md5: 5fdd2e436dfe56d19ece49070180d439
+      size: 21428
+    - path: target_map_consolidated.graphml
+      md5: d0e771646b98acd7c0cbf288207778df
       size: 2396203
