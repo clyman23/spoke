@@ -1,3 +1,5 @@
+/raw_data
+
 crash_data_normalized.pkl.gz
 crash_data_normalized_with_node_graph.pkl.gz
 danger_by_node_id.pkl.gz
