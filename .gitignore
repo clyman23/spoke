@@ -5,7 +5,6 @@ notebooks/*/cache/*
 
 # Data managed by DVC
 /data
-/pipeline_data
 
 # pycache
 __pycache__/*
