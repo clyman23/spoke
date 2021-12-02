@@ -1,64 +1,64 @@
 stages:
-    create_map:
-        desc: Generate an OSMnx map of our target area.
-        cmd: python spoke/data_processing/00_create_map.py
-        outs:
-            - pipeline_data/target_map.graphml
-    normalize_weather_data:
-        desc: Prepare weather data for usage in system.
-        cmd: python spoke/data_processing/01_normalizing_weather_data.py
-        deps:
-            - pipeline_data/raw_data/weather/
-        outs:
-            - pipeline_data/weather_data_normalized.pkl.gz
-    normalize_crash_data:
-        desc: Prepare crash data for usage in system.
-        cmd: python spoke/data_processing/02_normalizing_crash_data.py
-        deps:
-            - pipeline_data/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
-        outs:
-            - pipeline_data/crash_data_normalized.pkl.gz
-    join_crash_data_to_nodes:
-        desc: Join crash data to street graph nodes.
-        cmd: python spoke/data_processing/03_joining_crash_data_to_nodes.py
-        deps:
-            - pipeline_data/target_map.graphml
-            - pipeline_data/crash_data_normalized.pkl.gz
-        outs:
-            - pipeline_data/crash_data_normalized_with_node_graph.pkl.gz
-    normalize_citibike_data:
-        desc: Filter trip data and associate trips with street graph nodes
-        cmd: python spoke/data_processing/04_normalizing_citibike_data.py
-        deps:
-            - pipeline_data/target_map.graphml
-            - pipeline_data/raw_data/citibike/
-        outs:
-            - pipeline_data/trip_data_normalized.pkl.gz
-    join_all_data:
-        desc: Unify all datasets into a single dataset
-        cmd: python spoke/data_processing/05_joining_all_data.py
-        deps:
-            - pipeline_data/weather_data_normalized.pkl.gz
-            - pipeline_data/crash_data_normalized_with_node_graph.pkl.gz
-            - pipeline_data/trip_data_normalized.pkl.gz
-        outs:
-            - pipeline_data/unified_dataset.pkl.gz
-    associate_ctas_to_nodes:
-        desc: Generate a lookup table for nodes and census tracts
-        cmd: python spoke/data_processing/06_associate_ctas_to_nodes.py
-        deps:
-            - pipeline_data/target_map.graphml
-            - pipeline_data/raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
-            - pipeline_data/unified_dataset.pkl.gz
-        outs: 
-            - pipeline_data/node_id_census_tract_key.pkl.gz
-    compute_danger:
-        desc: 'Compute danger metric'
-        cmd: python spoke/data_processing/07_compute_danger.py
-        deps:
-            - pipeline_data/target_map.graphml
-            - pipeline_data/node_id_census_tract_key.pkl.gz
-            - pipeline_data/unified_dataset.pkl.gz
-        outs:
-            - pipeline_data/target_map_consolidated.graphml
-            - pipeline_data/danger_by_node_id.pkl.gz
+  create_map:
+    desc: Generate an OSMnx map of our target area.
+    cmd: python spoke/data_processing/00_create_map.py
+    outs:
+      - pipeline_data/target_map.graphml
+  normalize_weather_data:
+    desc: Prepare weather data for usage in system.
+    cmd: python spoke/data_processing/01_normalizing_weather_data.py
+    deps:
+      - pipeline_data/raw_data/weather/
+    outs:
+      - pipeline_data/weather_data_normalized.pkl.gz
+  normalize_crash_data:
+    desc: Prepare crash data for usage in system.
+    cmd: python spoke/data_processing/02_normalizing_crash_data.py
+    deps:
+      - pipeline_data/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
+    outs:
+      - pipeline_data/crash_data_normalized.pkl.gz
+  join_crash_data_to_nodes:
+    desc: Join crash data to street graph nodes.
+    cmd: python spoke/data_processing/03_joining_crash_data_to_nodes.py
+    deps:
+      - pipeline_data/target_map.graphml
+      - pipeline_data/crash_data_normalized.pkl.gz
+    outs:
+      - pipeline_data/crash_data_normalized_with_node_graph.pkl.gz
+  normalize_citibike_data:
+    desc: Filter trip data and associate trips with street graph nodes
+    cmd: python spoke/data_processing/04_normalizing_citibike_data.py
+    deps:
+      - pipeline_data/target_map.graphml
+      - pipeline_data/raw_data/citibike/
+    outs:
+      - pipeline_data/trip_data_normalized.pkl.gz
+  join_all_data:
+    desc: Unify all datasets into a single dataset
+    cmd: python spoke/data_processing/05_joining_all_data.py
+    deps:
+      - pipeline_data/weather_data_normalized.pkl.gz
+      - pipeline_data/crash_data_normalized_with_node_graph.pkl.gz
+      - pipeline_data/trip_data_normalized.pkl.gz
+    outs:
+      - pipeline_data/unified_dataset.pkl.gz
+  associate_ctas_to_nodes:
+    desc: Generate a lookup table for nodes and census tracts
+    cmd: python spoke/data_processing/06_associate_ctas_to_nodes.py
+    deps:
+      - pipeline_data/target_map.graphml
+      - pipeline_data/raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
+      - pipeline_data/unified_dataset.pkl.gz
+    outs:
+      - pipeline_data/node_id_census_tract_key.pkl.gz
+  compute_danger:
+    desc: "Compute danger metric"
+    cmd: python spoke/data_processing/07_compute_danger.py
+    deps:
+      - pipeline_data/target_map.graphml
+      - pipeline_data/node_id_census_tract_key.pkl.gz
+      - pipeline_data/unified_dataset.pkl.gz
+    outs:
+      - pipeline_data/target_map_consolidated.graphml
+      - pipeline_data/danger_by_node_id.pkl.gz
