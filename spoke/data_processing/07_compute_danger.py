@@ -8,11 +8,11 @@ import networkx as nx
 
 from spoke.graphing import saturate_nodes
 
-INPUT_FILE_GRAPH = "pipeline_data/target_map.graphml"
-INPUT_FILE_CTA_LOOKUP = "pipeline_data/node_id_census_tract_key.pkl.gz"
-INPUT_FILE_DATASET = "pipeline_data/unified_dataset.pkl.gz"
-OUTPUT_FILE_DANGER = "pipeline_data/danger_by_node_id.pkl.gz"
-OUTPUT_FILE_GRAPH = "pipeline_data/target_map_consolidated.graphml"
+INPUT_FILE_GRAPH = "target_map.graphml"
+INPUT_FILE_CTA_LOOKUP = "node_id_census_tract_key.pkl.gz"
+INPUT_FILE_DATASET = "unified_dataset.pkl.gz"
+OUTPUT_FILE_DANGER = "danger_by_node_id.pkl.gz"
+OUTPUT_FILE_GRAPH = "target_map_consolidated.graphml"
 
 
 def process():

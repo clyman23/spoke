@@ -3,8 +3,8 @@ from os.path import abspath, join
 
 import pandas as pd
 
-INPUT_FILE = "pipeline_data/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv"
-OUTPUT_FILE = "pipeline_data/crash_data_normalized.pkl.gz"
+INPUT_FILE = "../raw_data/Motor_Vehicle_Collisions_-_Crashes.csv"
+OUTPUT_FILE = "crash_data_normalized.pkl.gz"
 
 
 def process(time_period_start, time_period_end):

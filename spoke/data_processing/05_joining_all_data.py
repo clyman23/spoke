@@ -1,10 +1,10 @@
 import pandas as pd
 import osmnx as ox
 
-INPUT_FILE_TRIPS = "pipeline_data/trip_data_normalized.pkl.gz"
-INPUT_FILE_CRASHES = "pipeline_data/crash_data_normalized_with_node_graph.pkl.gz"
-INPUT_FILE_WEATHER = "pipeline_data/weather_data_normalized.pkl.gz"
-OUTPUT_FILE = "pipeline_data/unified_dataset.pkl.gz"
+INPUT_FILE_TRIPS = "trip_data_normalized.pkl.gz"
+INPUT_FILE_CRASHES = "crash_data_normalized_with_node_graph.pkl.gz"
+INPUT_FILE_WEATHER = "weather_data_normalized.pkl.gz"
+OUTPUT_FILE = "unified_dataset.pkl.gz"
 
 
 def normalize_trip_df(trip_df):

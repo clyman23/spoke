@@ -10,10 +10,10 @@ from networkx import NetworkXNoPath
 from tqdm import tqdm
 from datetime import datetime
 
-INPUT_FILE_GRAPH = "pipeline_data/target_map.graphml"
-INPUT_FILE_PREFIX = "pipeline_data/raw_data/citibike/"
+INPUT_FILE_GRAPH = "target_map.graphml"
+INPUT_FILE_PREFIX = "../raw_data/citibike/"
 
-OUTPUT_FILE = "pipeline_data/trip_data_normalized.pkl.gz"
+OUTPUT_FILE = "trip_data_normalized.pkl.gz"
 
 def load_input_data(time_period_start, time_period_end):
     start_year = datetime.strptime(time_period_start, '%Y-%m-%d').year

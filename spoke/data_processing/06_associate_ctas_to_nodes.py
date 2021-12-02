@@ -4,10 +4,10 @@ import sys
 import osmnx as ox
 from os.path import abspath, dirname, join
 
-INPUT_FILE_GRAPH = "pipeline_data/target_map.graphml"
-INPUT_FILE_CENSUS_SHAPEFILE = "pipeline_data/raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp"
-INPUT_FILE_DATASET = "pipeline_data/unified_dataset.pkl.gz"
-OUTPUT_FILE = "pipeline_data/node_id_census_tract_key.pkl.gz"
+INPUT_FILE_GRAPH = "target_map.graphml"
+INPUT_FILE_CENSUS_SHAPEFILE = "../raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp"
+INPUT_FILE_DATASET = "unified_dataset.pkl.gz"
+OUTPUT_FILE = "node_id_census_tract_key.pkl.gz"
 
 
 def process():
@@ -18,11 +18,11 @@ def process():
         G, nodes=True, edges=False, node_geometry=True
     )
 
-    ny_county_tracts_gdf = tract_gdf.loc[tract_gdf["boro_name"] == "Manhattan"].copy()
+    ny_county_tracts_gdf = tract_gdf.loc[tract_gdf["boro_name"] == "Manhattan"].to_crs(crs='epsg:4326')
 
     nodes_in_tracts = gpd.sjoin(node_gdf, ny_county_tracts_gdf, predicate="intersects")
 
-    node_id_census_tracts = nodes_in_tracts[["ct2010"]].copy()
+    node_id_census_tracts = nodes_in_tracts[["ct2010"]]
 
     return node_id_census_tracts
 

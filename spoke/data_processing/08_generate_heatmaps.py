@@ -4,8 +4,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import networkx as nx
 
-INPUT_FILE_DANGER = "pipeline_data/danger_by_node_id.pkl.gz"
-INPUT_FILE_GRAPH = "pipeline_data/target_map_consolidated.graphml"
+INPUT_FILE_DANGER = "danger_by_node_id.pkl.gz"
+INPUT_FILE_GRAPH = "target_map_consolidated.graphml"
 
 from spoke.graphing import clip_northern_edge
 
