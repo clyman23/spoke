@@ -8,6 +8,7 @@ INPUT_FILE_GRAPH = "pipeline_data/target_map.graphml"
 INPUT_FILE_CRASHES = "pipeline_data/crash_data_normalized.pkl.gz"
 OUTPUT_FILE = "pipeline_data/crash_data_normalized_with_node_graph.pkl.gz"
 
+THRESHOLD_DIST_M = 100
 
 def process():
     # We load the graph and the normalized set of crashes
@@ -16,7 +17,7 @@ def process():
 
     # This is the distance from a crash to its nearest node beyond which we assume
     # that the crash occurred outside of our graph and isn't really matched to that node.
-    THRESHOLD_DIST_M = 100
+    
 
     # Now we create a dataframe with a row for each crash that contains the ID
     # of the nearest street network node.

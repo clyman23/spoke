@@ -13,14 +13,14 @@ INPUT_FILE_GRAPH = "pipeline_data/target_map.graphml"
 INPUT_FILE_PREFIX = "pipeline_data/raw_data/citibike/"
 INPUT_FILE_GLOB = "2019*.csv.zip"
 OUTPUT_FILE = "pipeline_data/trip_data_normalized.pkl.gz"
+
 TRIP_SAMPLE_SIZE = 10_000
 
 
 def load_input_data():
     trip_df = pd.DataFrame()
-    data_path = Path(INPUT_FILE_PREFIX)
-    for zipfile in data_path.glob(INPUT_FILE_GLOB):
-        with ZipFile(data_path / zipfile) as zf:
+    for zipfile in Path(INPUT_FILE_PREFIX).glob(INPUT_FILE_GLOB):
+        with ZipFile(zipfile) as zf:
             for file in zf.infolist():
                 if file.filename.endswith(".csv") and not file.filename.startswith(
                     "__"

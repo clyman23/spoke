@@ -1,16 +1,16 @@
 schema: '2.0'
 stages:
   normalize_weather_data:
-    cmd: python spoke/data_processing/01_normalizing_weather_data.py
+    cmd: python spoke/data_processing/01_normalizing_weather_data.py 2019-01-01 2019-12-31
     deps:
-    - path: pipeline_data/raw_data/weather/
+    - path: pipeline_data//raw_data/weather/
       md5: f67235592662850f4b0856767095f685.dir
       size: 24203989
       nfiles: 4
     outs:
-    - path: pipeline_data/weather_data_normalized.pkl.gz
-      md5: eb67160e552b0c66e1a1ee175b3a3f54
-      size: 76996
+    - path: pipeline_data//weather_data_normalized.pkl.gz
+      md5: c0b0cc348c880f5df20150d175a59612
+      size: 10916
   normalize_citibike_data:
     cmd: python spoke/data_processing/04_normalizing_citibike_data.py
     deps:
@@ -28,12 +28,12 @@ stages:
   normalize_crash_data:
     cmd: python spoke/data_processing/02_normalizing_crash_data.py
     deps:
-    - path: pipeline_data/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
+    - path: pipeline_data//raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
       md5: 84bd8d0baf1943f1f3bfe319f420a176
       size: 395108006
     outs:
-    - path: pipeline_data/crash_data_normalized.pkl.gz
-      md5: a5cc79ebe638ab106bdd11d483b4dc76
+    - path: pipeline_data//crash_data_normalized.pkl.gz
+      md5: 76dfa6030b04d148a3355e6180e02d44
       size: 1434809
   join_crash_data_to_nodes:
     cmd: python spoke/data_processing/03_joining_crash_data_to_nodes.py
@@ -65,10 +65,10 @@ stages:
       md5: 375e963f14d04ded758bb784db385a4e
       size: 1420039
   create_map:
-    cmd: python spoke/data_processing/00_create_map.py
+    cmd: python spoke/data_processing/00_create_map.py mnh_below_34th
     outs:
-    - path: pipeline_data/target_map.graphml
-      md5: aca95a0fb24b92963e92f0130053eeae
+    - path: pipeline_data//target_map.graphml
+      md5: d5c951ff7c6e000c448628422b3ca951
       size: 2696141
   associate_ctas_to_nodes:
     cmd: python spoke/data_processing/06_associate_ctas_to_nodes.py
