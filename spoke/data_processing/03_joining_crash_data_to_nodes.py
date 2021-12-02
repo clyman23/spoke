@@ -8,16 +8,10 @@ INPUT_FILE_GRAPH = "pipeline_data/target_map.graphml"
 INPUT_FILE_CRASHES = "pipeline_data/crash_data_normalized.pkl.gz"
 OUTPUT_FILE = "pipeline_data/crash_data_normalized_with_node_graph.pkl.gz"
 
-THRESHOLD_DIST_M = 100
-
-def process():
+def process(crash_threshold_dist_m):
     # We load the graph and the normalized set of crashes
     G = ox.io.load_graphml(INPUT_FILE_GRAPH)
     crash_df = pd.read_pickle(INPUT_FILE_CRASHES)
-
-    # This is the distance from a crash to its nearest node beyond which we assume
-    # that the crash occurred outside of our graph and isn't really matched to that node.
-    
 
     # Now we create a dataframe with a row for each crash that contains the ID
     # of the nearest street network node.
@@ -29,7 +23,7 @@ def process():
         nn_id, dist = ox.distance.nearest_nodes(
             G, crash.LONGITUDE, crash.LATITUDE, return_dist=True
         )
-        if dist > THRESHOLD_DIST_M:
+        if dist > crash_threshold_dist_m:
             continue
         nn = G.nodes[nn_id]
         nearest_nodes.loc[i] = {
@@ -45,5 +39,9 @@ def process():
 
 
 if __name__ == "__main__":
-    df = process()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('crash_threshold_dist_m', type=int)
+    args = parser.parse_args()
+    df = process(args.crash_threshold_dist_m)
     df.to_pickle(OUTPUT_FILE)

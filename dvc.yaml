@@ -18,14 +18,14 @@ stages:
       - ${dr}/weather_data_normalized.pkl.gz
   normalize_crash_data:
     desc: Prepare crash data for usage in system.
-    cmd: python ${sr}/02_normalizing_crash_data.py
+    cmd: python ${sr}/02_normalizing_crash_data.py ${time_period_start} ${time_period_end}
     deps:
       - ${dr}/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
     outs:
       - ${dr}/crash_data_normalized.pkl.gz
   join_crash_data_to_nodes:
     desc: Join crash data to street graph nodes.
-    cmd: python ${sr}/03_joining_crash_data_to_nodes.py
+    cmd: python ${sr}/03_joining_crash_data_to_nodes.py ${crash_threshold_dist_m}
     deps:
       - ${dr}/target_map.graphml
       - ${dr}/crash_data_normalized.pkl.gz
@@ -33,7 +33,7 @@ stages:
       - ${dr}/crash_data_normalized_with_node_graph.pkl.gz
   normalize_citibike_data:
     desc: Filter trip data and associate trips with street graph nodes
-    cmd: python ${sr}/04_normalizing_citibike_data.py
+    cmd: python ${sr}/04_normalizing_citibike_data.py ${time_period_start} ${time_period_end} ${trip_threshold_dist_m} ${trip_sample_size}
     deps:
       - ${dr}/target_map.graphml
       - ${dr}/raw_data/citibike/

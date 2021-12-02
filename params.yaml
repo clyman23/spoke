@@ -3,6 +3,8 @@ time_period_end: '2019-12-31'
 # The distance, in meters, that a crash must be within to a node in the street
 # network for the node to be considered for attribution.
 crash_threshold_dist_m: 100
+# Same as the above, but for pairing Citibike start and end points with nodes
+trip_threshold_dist_m: 100
 # The clipping boundary used to generate the base map. See
 # data_processing/00_create_map.py for a definition of the available values for
 # this
