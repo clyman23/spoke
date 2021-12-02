@@ -1,13 +1,15 @@
-from os.path import join
 import sys
+from os.path import abspath, join
+
 import pandas as pd
 
 TIME_PERIOD_START = '2019-01-01'
 TIME_PERIOD_END = '2021-11-01'
 
-DIR = sys.path[0]
-INPUT_FILE = join(DIR, '../../data/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv')
-OUTPUT_FILE = join(DIR, f'../../data/crash_data/crash_data_normalized_{TIME_PERIOD_START}-{TIME_PERIOD_END}.pkl.gz')
+DIR = sys.path[0] if __name__ == '__main__' else dirname(__loader__.path)
+
+INPUT_FILE = abspath(join(DIR, '../../pipeline_data/raw_data/Motor_Vehicle_Collisions_-_Crashes.csv'))
+OUTPUT_FILE = abspath(join(DIR, f'../../pipeline_data/crash_data_normalized.pkl.gz'))
 
 def process():
     # Load raw data
