@@ -15,7 +15,7 @@ def process(time_period_start, time_period_end):
 
     # Filter for desired time period
     crash_df.query(
-        f'`CRASH DATE` >= "{time_period_start}" & `CRASH DATE` <= "{time_period_end}"',
+        '`CRASH DATE` >= @time_period_start & `CRASH DATE` <= @time_period_end',
         inplace=True,
     )
 

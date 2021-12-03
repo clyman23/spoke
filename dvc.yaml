@@ -1,83 +1,100 @@
 vars:
   - sr: ../../spoke/data_processing
-  - year: '2019'
 
 stages:
   create_map:
-    desc: Generate an OSMnx map of our target area.
-    cmd: python ${sr}/00_create_map.py ${map_clipping_boundary}
-    wdir: pipeline_data/${year}
-    outs:
-      - target_map.graphml
+    foreach: ${config}
+    do:
+      desc: Generate an OSMnx map of our target area.
+      cmd: python ${sr}/00_create_map.py ${item.map_clipping_boundary}
+      wdir: pipeline_data/${key}
+      outs:
+        - target_map.graphml
   normalize_weather_data:
-    desc: Prepare weather data for usage in system.
-    cmd: python ${sr}/01_normalizing_weather_data.py ${time_period_start} ${time_period_end}
-    wdir: pipeline_data/${year}
-    deps:
-      - ../raw_data/weather/
-    outs:
-      - weather_data_normalized.pkl.gz
+    foreach: ${config}
+    do:
+      desc: Prepare weather data for usage in system.
+      cmd: python ${sr}/01_normalizing_weather_data.py ${item.time_period_start} ${item.time_period_end}
+      wdir: pipeline_data/${key}
+      deps:
+        - ../raw_data/weather/
+      outs:
+        - weather_data_normalized.pkl.gz
   normalize_crash_data:
-    desc: Prepare crash data for usage in system.
-    cmd: python ${sr}/02_normalizing_crash_data.py ${time_period_start} ${time_period_end}
-    wdir: pipeline_data/${year}
-    deps:
-      - ../raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
-    outs:
-      - crash_data_normalized.pkl.gz
+    foreach: ${config}
+    do:
+      desc: Prepare crash data for usage in system.
+      cmd: python ${sr}/02_normalizing_crash_data.py ${item.time_period_start} ${item.time_period_end}
+      wdir: pipeline_data/${key}
+      deps:
+        - ../raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
+      outs:
+        - crash_data_normalized.pkl.gz
   join_crash_data_to_nodes:
-    desc: Join crash data to street graph nodes.
-    cmd: python ${sr}/03_joining_crash_data_to_nodes.py ${crash_threshold_dist_m}
-    wdir: pipeline_data/${year}
-    deps:
-      - target_map.graphml
-      - crash_data_normalized.pkl.gz
-    outs:
-      - crash_data_normalized_with_node_graph.pkl.gz
+    foreach: ${config}
+    do:
+      desc: Join crash data to street graph nodes.
+      cmd: python ${sr}/03_joining_crash_data_to_nodes.py ${item.crash_threshold_dist_m}
+      wdir: pipeline_data/${key}
+      deps:
+        - target_map.graphml
+        - crash_data_normalized.pkl.gz
+      outs:
+        - crash_data_normalized_with_node_graph.pkl.gz
   normalize_citibike_data:
-    desc: Filter trip data and associate trips with street graph nodes
-    cmd: python ${sr}/04_normalizing_citibike_data.py ${time_period_start} ${time_period_end} ${trip_threshold_dist_m} ${trip_sample_size}
-    wdir: pipeline_data/${year}
-    deps:
-      - target_map.graphml
-      - ../raw_data/citibike/
-    outs:
-      - trip_data_normalized.pkl.gz
+    foreach: ${config}
+    do:
+      desc: Filter trip data and associate trips with street graph nodes
+      cmd: python ${sr}/04_normalizing_citibike_data.py ${item.time_period_start} ${item.time_period_end} ${item.trip_threshold_dist_m} ${item.trip_sample_size}
+      wdir: pipeline_data/${key}
+      deps:
+        - target_map.graphml
+        - ../raw_data/citibike/
+      outs:
+        - trip_data_normalized.pkl.gz
   join_all_data:
-    desc: Unify all datasets into a single dataset
-    cmd: python ${sr}/05_joining_all_data.py
-    wdir: pipeline_data/${year}
-    deps:
-      - weather_data_normalized.pkl.gz
-      - crash_data_normalized_with_node_graph.pkl.gz
-      - trip_data_normalized.pkl.gz
-    outs:
-      - unified_dataset.pkl.gz
+    foreach: ${config}
+    do:
+      desc: Unify all datasets into a single dataset
+      cmd: python ${sr}/05_joining_all_data.py
+      wdir: pipeline_data/${key}
+      deps:
+        - weather_data_normalized.pkl.gz
+        - crash_data_normalized_with_node_graph.pkl.gz
+        - trip_data_normalized.pkl.gz
+      outs:
+        - unified_dataset.pkl.gz
   associate_ctas_to_nodes:
-    desc: Generate a lookup table for nodes and census tracts
-    cmd: python ${sr}/06_associate_ctas_to_nodes.py
-    wdir: pipeline_data/${year}
-    deps:
-      - target_map.graphml
-      - ../raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
-      - unified_dataset.pkl.gz
-    outs:
-      - node_id_census_tract_key.pkl.gz
+    foreach: ${config}
+    do:
+      desc: Generate a lookup table for nodes and census tracts
+      cmd: python ${sr}/06_associate_ctas_to_nodes.py
+      wdir: pipeline_data/${key}
+      deps:
+        - target_map.graphml
+        - ../raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
+        - unified_dataset.pkl.gz
+      outs:
+        - node_id_census_tract_key.pkl.gz
   compute_danger:
-    desc: Compute danger metric
-    cmd: python ${sr}/07_compute_danger.py
-    wdir: pipeline_data/${year}
-    deps:
-      - target_map.graphml
-      - node_id_census_tract_key.pkl.gz
-      - unified_dataset.pkl.gz
-    outs:
-      - target_map_consolidated.graphml
-      - danger_by_node_id.pkl.gz
+    foreach: ${config}
+    do:
+      desc: Compute danger metric
+      cmd: python ${sr}/07_compute_danger.py
+      wdir: pipeline_data/${key}
+      deps:
+        - target_map.graphml
+        - node_id_census_tract_key.pkl.gz
+        - unified_dataset.pkl.gz
+      outs:
+        - target_map_consolidated.graphml
+        - danger_by_node_id.pkl.gz
   generate_heatmaps:
-    desc: Generate heatmaps for resulting danger metrics
-    cmd: python ${sr}/08_generate_heatmaps.py
-    wdir: pipeline_data/${year}
-    deps:
-      - target_map_consolidated.graphml
-      - danger_by_node_id.pkl.gz
+    foreach: ${config}
+    do:
+      desc: Generate heatmaps for resulting danger metrics
+      cmd: python ${sr}/08_generate_heatmaps.py
+      wdir: pipeline_data/${key}
+      deps:
+        - target_map_consolidated.graphml
+        - danger_by_node_id.pkl.gz
