@@ -125,6 +125,26 @@ def generate_node_events_for_trips(trip_df_in_area, stations_with_nodes, G, trip
 
 def process(time_period_start, time_period_end, trip_threshold_dist_m, trip_sample_size):
     trip_df = load_input_data(time_period_start, time_period_end)
+
+    # Newer years (2021 onward) of data have some weird columns that only have
+    # empty columns. Let's make sure we drop those. Note that we ignore errors
+    # here because not all time periods are going to have these columns.
+    trip_df.drop(columns=[
+        "ride_id",
+        "rideable_type",
+        "started_at",
+        "ended_at",
+        "start_station_name",
+        "start_station_id",
+        "end_station_name",
+        "end_station_id",
+        "start_lat",
+        "start_lng",
+        "end_lat",
+        "end_lng",
+        "member_casual"
+    ], inplace=True, errors='ignore')
+
     G = ox.io.load_graphml(INPUT_FILE_GRAPH)
     # Get the list of all unique Citibike stations referenced by the trip records we have
     all_stations = get_all_stations(trip_df)

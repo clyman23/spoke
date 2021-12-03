@@ -22,10 +22,10 @@ config:
     trip_threshold_dist_m: 100
     map_clipping_boundary: mnh_below_34th
     trip_sample_size: 100_000
-  # '2021':
-  #   time_period_start: '2021-01-01'
-  #   time_period_end: '2021-11-01'
-  #   crash_threshold_dist_m: 100
-  #   trip_threshold_dist_m: 100
-  #   map_clipping_boundary: mnh_below_34th
-  #   trip_sample_size: 10_000
+  '2021':
+    time_period_start: '2021-01-01'
+    time_period_end: '2021-11-01'
+    crash_threshold_dist_m: 100
+    trip_threshold_dist_m: 100
+    map_clipping_boundary: mnh_below_34th
+    trip_sample_size: 10_000
