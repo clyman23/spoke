@@ -11,3 +11,6 @@ dependencies:
   - numpy
   - matplotlib
   - osmnx
+  - tqdm
+  - dask
+  - geoplot

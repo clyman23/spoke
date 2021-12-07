@@ -106,6 +106,11 @@ def generate_node_events_for_trips(trip_df_in_area, stations_with_nodes, G, trip
             trips_with_no_paths.append(trip.name)
             return
 
+        # It looks like newer versions of NetworkX return None when there is no
+        # route instead of throwing an error.
+        if route is None:
+            return
+
         return pd.DataFrame(
             {
                 "TRIP_ID": trip.name,
