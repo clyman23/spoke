@@ -7,6 +7,6 @@
 */target_map.graphml
 */target_map_consolidated.graphml
 */trip_data_normalized.pkl.gz
-*/unified_dataset.pkl.gz
+*/unified_dataset.parquet
 */weather_data_normalized.pkl.gz
 */cache/

@@ -37,10 +37,11 @@ def process():
     nc = ox.plot.get_node_colors_by_attr(G, "danger", cmap="plasma")
 
     # Note that I am clipping the top ~40 meters of the map off to help remove edge effects
-    ns = clip_northern_edge(
-        ox.utils_graph.graph_to_gdfs(G, edges=False).to_crs('EPSG:4326'),
-        0.0003
-    )
+    # ns = clip_northern_edge(
+    #     ox.utils_graph.graph_to_gdfs(G, edges=False).to_crs('EPSG:4326'),
+    #     0.0003
+    # )
+    ns = ox.utils_graph.graph_to_gdfs(G, edges=False).to_crs('EPSG:4326')
 
     hm = make_heatmap(ns, ns.danger)
 
