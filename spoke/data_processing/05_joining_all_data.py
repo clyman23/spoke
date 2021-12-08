@@ -4,7 +4,7 @@ import osmnx as ox
 INPUT_FILE_TRIPS = "trip_data_normalized.pkl.gz"
 INPUT_FILE_CRASHES = "crash_data_normalized_with_node_graph.pkl.gz"
 INPUT_FILE_WEATHER = "weather_data_normalized.pkl.gz"
-OUTPUT_FILE = "unified_dataset.pkl.gz"
+OUTPUT_FILE = "unified_dataset.parquet"
 
 
 def normalize_trip_df(trip_df):
@@ -105,4 +105,4 @@ def process():
 
 if __name__ == "__main__":
     df = process()
-    df.to_pickle(OUTPUT_FILE)
+    df.to_parquet(OUTPUT_FILE)
