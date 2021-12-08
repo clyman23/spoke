@@ -63,7 +63,7 @@ stages:
         - crash_data_normalized_with_node_graph.pkl.gz
         - trip_data_normalized.pkl.gz
       outs:
-        - unified_dataset.pkl.gz
+        - unified_dataset.parquet
   associate_ctas_to_nodes:
     foreach: ${config}
     do:
@@ -73,7 +73,6 @@ stages:
       deps:
         - target_map.graphml
         - ../raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
-        - unified_dataset.pkl.gz
       outs:
         - node_id_census_tract_key.pkl.gz
   compute_danger:
@@ -85,7 +84,7 @@ stages:
       deps:
         - target_map.graphml
         - node_id_census_tract_key.pkl.gz
-        - unified_dataset.pkl.gz
+        - unified_dataset.parquet
       outs:
         - target_map_consolidated.graphml
         - danger_by_node_id.pkl.gz

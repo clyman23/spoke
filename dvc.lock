@@ -127,7 +127,7 @@ stages:
       nfiles: 4
     outs:
     - path: weather_data_normalized.pkl.gz
-      md5: cf785750bc0215b5ba97b58d86925f7f
+      md5: dad271c85f8d28dd2f944e4512e44b9e
       size: 10423
   normalize_weather_data@2021:
     cmd: python ../../spoke/data_processing/01_normalizing_weather_data.py 2021-01-01
@@ -139,13 +139,13 @@ stages:
       nfiles: 4
     outs:
     - path: weather_data_normalized.pkl.gz
-      md5: bbadc54822c0eec5340e621b247d9997
+      md5: e308056fc894bb6ccbfe0f414e391520
       size: 9130
   create_map@2021:
     cmd: python ../../spoke/data_processing/00_create_map.py mnh_below_34th
     outs:
     - path: target_map.graphml
-      md5: 5f4fc67e9241123c516c25f29d83c946
+      md5: cdd5e1c1aad89aece16a33f9670c5aed
       size: 2695878
   normalize_crash_data@2021:
     cmd: python ../../spoke/data_processing/02_normalizing_crash_data.py 2021-01-01
@@ -156,20 +156,20 @@ stages:
       size: 395108006
     outs:
     - path: crash_data_normalized.pkl.gz
-      md5: 49d503a1b348fa02b5264c0c42b94d57
+      md5: 8d3c1c697f24a9331158464f2a9eec06
       size: 412062
   join_crash_data_to_nodes@2021:
     cmd: python ../../spoke/data_processing/03_joining_crash_data_to_nodes.py 100
     deps:
     - path: crash_data_normalized.pkl.gz
-      md5: 49d503a1b348fa02b5264c0c42b94d57
+      md5: 8d3c1c697f24a9331158464f2a9eec06
       size: 412062
     - path: target_map.graphml
-      md5: 5f4fc67e9241123c516c25f29d83c946
+      md5: cdd5e1c1aad89aece16a33f9670c5aed
       size: 2695878
     outs:
     - path: crash_data_normalized_with_node_graph.pkl.gz
-      md5: 37f7b9336e26fa78e9e16bdf5a07762c
+      md5: 75331b9b4c78690d70c1f496f031983d
       size: 59155
   normalize_citibike_data@2021:
     cmd: python ../../spoke/data_processing/04_normalizing_citibike_data.py 2021-01-01
@@ -180,28 +180,28 @@ stages:
       size: 2464917000
       nfiles: 33
     - path: target_map.graphml
-      md5: 5f4fc67e9241123c516c25f29d83c946
+      md5: cdd5e1c1aad89aece16a33f9670c5aed
       size: 2695878
     outs:
     - path: trip_data_normalized.pkl.gz
-      md5: b1e25b731a15e40c4d5664fea71f2849
+      md5: 99c4b246d9f59426798835a0d4780b7c
       size: 1611793
   join_all_data@2021:
     cmd: python ../../spoke/data_processing/05_joining_all_data.py
     deps:
     - path: crash_data_normalized_with_node_graph.pkl.gz
-      md5: 37f7b9336e26fa78e9e16bdf5a07762c
+      md5: 75331b9b4c78690d70c1f496f031983d
       size: 59155
     - path: trip_data_normalized.pkl.gz
-      md5: b1e25b731a15e40c4d5664fea71f2849
+      md5: 99c4b246d9f59426798835a0d4780b7c
       size: 1611793
     - path: weather_data_normalized.pkl.gz
-      md5: bbadc54822c0eec5340e621b247d9997
+      md5: e308056fc894bb6ccbfe0f414e391520
       size: 9130
     outs:
-    - path: unified_dataset.pkl.gz
-      md5: b3b470f45f128cb75d64e34f5116ef46
-      size: 1260738
+    - path: unified_dataset.parquet
+      md5: 3c1c5b5180498fd3a6d74f5d43ef8201
+      size: 2066474
   associate_ctas_to_nodes@2021:
     cmd: python ../../spoke/data_processing/06_associate_ctas_to_nodes.py
     deps:
@@ -209,20 +209,17 @@ stages:
       md5: 0f6d2a4aaedc2e12f3db25f99d3f759e
       size: 2802360
     - path: target_map.graphml
-      md5: 5f4fc67e9241123c516c25f29d83c946
+      md5: cdd5e1c1aad89aece16a33f9670c5aed
       size: 2695878
-    - path: unified_dataset.pkl.gz
-      md5: b3b470f45f128cb75d64e34f5116ef46
-      size: 1260738
     outs:
     - path: node_id_census_tract_key.pkl.gz
-      md5: 2d15d3133724865bbe857537407a6ee8
+      md5: f62be295cec949b473379f7e19050e12
       size: 8948
   create_map@2019:
     cmd: python ../../spoke/data_processing/00_create_map.py mnh_below_34th
     outs:
     - path: target_map.graphml
-      md5: fbb65228287bd728e404244d0a8136b9
+      md5: 9762351917f80b789719cbc2a47c1b26
       size: 2695878
   normalize_weather_data@2019:
     cmd: python ../../spoke/data_processing/01_normalizing_weather_data.py 2019-01-01
@@ -234,7 +231,7 @@ stages:
       nfiles: 4
     outs:
     - path: weather_data_normalized.pkl.gz
-      md5: ead057237a686c0aa9fd9ee5d3dc65a3
+      md5: 82396bd412a3487d4639e0d3d9bcc75e
       size: 10916
   normalize_crash_data@2019:
     cmd: python ../../spoke/data_processing/02_normalizing_crash_data.py 2019-01-01
@@ -245,20 +242,20 @@ stages:
       size: 395108006
     outs:
     - path: crash_data_normalized.pkl.gz
-      md5: 584d075c1c2d8853a56aa436bcda525e
+      md5: 273860906793003946e524528a9be903
       size: 591322
   join_crash_data_to_nodes@2019:
     cmd: python ../../spoke/data_processing/03_joining_crash_data_to_nodes.py 100
     deps:
     - path: crash_data_normalized.pkl.gz
-      md5: 584d075c1c2d8853a56aa436bcda525e
+      md5: 273860906793003946e524528a9be903
       size: 591322
     - path: target_map.graphml
-      md5: fbb65228287bd728e404244d0a8136b9
+      md5: 9762351917f80b789719cbc2a47c1b26
       size: 2695878
     outs:
     - path: crash_data_normalized_with_node_graph.pkl.gz
-      md5: 4d2880e37c1dc6ff5991b8b4a6c6bc92
+      md5: bcc6a45a24584827eefbeaf0968689b9
       size: 88378
   normalize_citibike_data@2019:
     cmd: python ../../spoke/data_processing/04_normalizing_citibike_data.py 2019-01-01
@@ -269,28 +266,28 @@ stages:
       size: 2464917000
       nfiles: 33
     - path: target_map.graphml
-      md5: fbb65228287bd728e404244d0a8136b9
+      md5: 9762351917f80b789719cbc2a47c1b26
       size: 2695878
     outs:
     - path: trip_data_normalized.pkl.gz
-      md5: c15848cd282b0d8e7a66e1604e86e14c
+      md5: f81e0b0817bfbdceaad53f7d096ac082
       size: 16286329
   join_all_data@2019:
     cmd: python ../../spoke/data_processing/05_joining_all_data.py
     deps:
     - path: crash_data_normalized_with_node_graph.pkl.gz
-      md5: 4d2880e37c1dc6ff5991b8b4a6c6bc92
+      md5: bcc6a45a24584827eefbeaf0968689b9
       size: 88378
     - path: trip_data_normalized.pkl.gz
-      md5: c15848cd282b0d8e7a66e1604e86e14c
+      md5: f81e0b0817bfbdceaad53f7d096ac082
       size: 16286329
     - path: weather_data_normalized.pkl.gz
-      md5: ead057237a686c0aa9fd9ee5d3dc65a3
+      md5: 82396bd412a3487d4639e0d3d9bcc75e
       size: 10916
     outs:
-    - path: unified_dataset.pkl.gz
-      md5: 295b9b45ac43f4440350e69dcaf2abc1
-      size: 12578043
+    - path: unified_dataset.parquet
+      md5: f51eeec7835a39f8ea4d2755edf08229
+      size: 16663459
   associate_ctas_to_nodes@2019:
     cmd: python ../../spoke/data_processing/06_associate_ctas_to_nodes.py
     deps:
@@ -298,39 +295,36 @@ stages:
       md5: 0f6d2a4aaedc2e12f3db25f99d3f759e
       size: 2802360
     - path: target_map.graphml
-      md5: fbb65228287bd728e404244d0a8136b9
+      md5: 9762351917f80b789719cbc2a47c1b26
       size: 2695878
-    - path: unified_dataset.pkl.gz
-      md5: 295b9b45ac43f4440350e69dcaf2abc1
-      size: 12578043
     outs:
     - path: node_id_census_tract_key.pkl.gz
-      md5: f4afac3003d3bf8f09c4f06d23a82b30
+      md5: efad478955e73ad8d4fb648f7cd9345c
       size: 8948
   compute_danger@2019:
     cmd: python ../../spoke/data_processing/07_compute_danger.py
     deps:
     - path: node_id_census_tract_key.pkl.gz
-      md5: f4afac3003d3bf8f09c4f06d23a82b30
+      md5: efad478955e73ad8d4fb648f7cd9345c
       size: 8948
     - path: target_map.graphml
-      md5: fbb65228287bd728e404244d0a8136b9
+      md5: 9762351917f80b789719cbc2a47c1b26
       size: 2695878
-    - path: unified_dataset.pkl.gz
-      md5: 295b9b45ac43f4440350e69dcaf2abc1
-      size: 12578043
+    - path: unified_dataset.parquet
+      md5: f51eeec7835a39f8ea4d2755edf08229
+      size: 16663459
     outs:
     - path: danger_by_node_id.pkl.gz
-      md5: 4cd4e22620a22b890f0ed7f66f627b82
+      md5: 0283cc470986ddf73734a68a52bfa4d3
       size: 24172
     - path: target_map_consolidated.graphml
-      md5: d584b28c81b2dd375e1d6fb5ea710fab
+      md5: 4117c8c5ba0951a1710b3bb43eab9e4a
       size: 2410335
   create_map@2020:
     cmd: python ../../spoke/data_processing/00_create_map.py mnh_below_34th
     outs:
     - path: target_map.graphml
-      md5: 91f8d4f8e8e70fa83bf1e88b4911d755
+      md5: 4e7182ebc0a30045e7fac7dd73ab3a95
       size: 2695878
   normalize_crash_data@2020:
     cmd: python ../../spoke/data_processing/02_normalizing_crash_data.py 2020-01-01
@@ -341,20 +335,20 @@ stages:
       size: 395108006
     outs:
     - path: crash_data_normalized.pkl.gz
-      md5: 849b6a9b50588c14043aa12612a2e3cd
+      md5: 19c68cff989e1fb682bd0c27f6ca394e
       size: 476706
   join_crash_data_to_nodes@2020:
     cmd: python ../../spoke/data_processing/03_joining_crash_data_to_nodes.py 100
     deps:
     - path: crash_data_normalized.pkl.gz
-      md5: 849b6a9b50588c14043aa12612a2e3cd
+      md5: 19c68cff989e1fb682bd0c27f6ca394e
       size: 476706
     - path: target_map.graphml
-      md5: 91f8d4f8e8e70fa83bf1e88b4911d755
+      md5: 4e7182ebc0a30045e7fac7dd73ab3a95
       size: 2695878
     outs:
     - path: crash_data_normalized_with_node_graph.pkl.gz
-      md5: 2bc463e239c5bde0849607391c81c50b
+      md5: d4e85584e0a26361ca206dfeff783d49
       size: 57894
   normalize_citibike_data@2020:
     cmd: python ../../spoke/data_processing/04_normalizing_citibike_data.py 2020-01-01
@@ -365,28 +359,28 @@ stages:
       size: 2464917000
       nfiles: 33
     - path: target_map.graphml
-      md5: 91f8d4f8e8e70fa83bf1e88b4911d755
+      md5: 4e7182ebc0a30045e7fac7dd73ab3a95
       size: 2695878
     outs:
     - path: trip_data_normalized.pkl.gz
-      md5: 470194004545ded19fa3f2a7319f99c7
+      md5: 9c72235ed9e7f6370c521e344c9a5410
       size: 16416628
   join_all_data@2020:
     cmd: python ../../spoke/data_processing/05_joining_all_data.py
     deps:
     - path: crash_data_normalized_with_node_graph.pkl.gz
-      md5: 2bc463e239c5bde0849607391c81c50b
+      md5: d4e85584e0a26361ca206dfeff783d49
       size: 57894
     - path: trip_data_normalized.pkl.gz
-      md5: 470194004545ded19fa3f2a7319f99c7
+      md5: 9c72235ed9e7f6370c521e344c9a5410
       size: 16416628
     - path: weather_data_normalized.pkl.gz
-      md5: cf785750bc0215b5ba97b58d86925f7f
+      md5: dad271c85f8d28dd2f944e4512e44b9e
       size: 10423
     outs:
-    - path: unified_dataset.pkl.gz
-      md5: 8a492a5f5887d4718b37fe8536573967
-      size: 12731387
+    - path: unified_dataset.parquet
+      md5: 508cf9c388bcc6b8fbd7d43e49771d37
+      size: 17059775
   associate_ctas_to_nodes@2020:
     cmd: python ../../spoke/data_processing/06_associate_ctas_to_nodes.py
     deps:
@@ -394,79 +388,76 @@ stages:
       md5: 0f6d2a4aaedc2e12f3db25f99d3f759e
       size: 2802360
     - path: target_map.graphml
-      md5: 91f8d4f8e8e70fa83bf1e88b4911d755
+      md5: 4e7182ebc0a30045e7fac7dd73ab3a95
       size: 2695878
-    - path: unified_dataset.pkl.gz
-      md5: 8a492a5f5887d4718b37fe8536573967
-      size: 12731387
     outs:
     - path: node_id_census_tract_key.pkl.gz
-      md5: a221ceb5f9d1819021df7feca81e838e
+      md5: f9dd2db44c26f1952a31b7667d790d62
       size: 8948
   compute_danger@2020:
     cmd: python ../../spoke/data_processing/07_compute_danger.py
     deps:
     - path: node_id_census_tract_key.pkl.gz
-      md5: a221ceb5f9d1819021df7feca81e838e
+      md5: f9dd2db44c26f1952a31b7667d790d62
       size: 8948
     - path: target_map.graphml
-      md5: 91f8d4f8e8e70fa83bf1e88b4911d755
+      md5: 4e7182ebc0a30045e7fac7dd73ab3a95
       size: 2695878
-    - path: unified_dataset.pkl.gz
-      md5: 8a492a5f5887d4718b37fe8536573967
-      size: 12731387
+    - path: unified_dataset.parquet
+      md5: 508cf9c388bcc6b8fbd7d43e49771d37
+      size: 17059775
     outs:
     - path: danger_by_node_id.pkl.gz
-      md5: ce1db7656b84194a0f397c19f294c280
+      md5: a29644de9b31737fc67efb93163c3ef2
       size: 22051
     - path: target_map_consolidated.graphml
-      md5: a757238e2b0ce4040ca8e54e0edfd23b
+      md5: 7bb62d85194115534ada7e6128d28c68
       size: 2410335
   generate_heatmaps@2019:
     cmd: python ../../spoke/data_processing/08_generate_heatmaps.py
     deps:
     - path: danger_by_node_id.pkl.gz
-      md5: 4cd4e22620a22b890f0ed7f66f627b82
+      md5: 0283cc470986ddf73734a68a52bfa4d3
       size: 24172
     - path: target_map_consolidated.graphml
-      md5: d584b28c81b2dd375e1d6fb5ea710fab
+      md5: 4117c8c5ba0951a1710b3bb43eab9e4a
       size: 2410335
   generate_heatmaps@2020:
     cmd: python ../../spoke/data_processing/08_generate_heatmaps.py
     deps:
     - path: danger_by_node_id.pkl.gz
-      md5: ce1db7656b84194a0f397c19f294c280
+      md5: a29644de9b31737fc67efb93163c3ef2
       size: 22051
     - path: target_map_consolidated.graphml
-      md5: a757238e2b0ce4040ca8e54e0edfd23b
+      md5: 7bb62d85194115534ada7e6128d28c68
       size: 2410335
   compute_danger@2021:
     cmd: python ../../spoke/data_processing/07_compute_danger.py
     deps:
     - path: node_id_census_tract_key.pkl.gz
-      md5: 2d15d3133724865bbe857537407a6ee8
+      md5: f62be295cec949b473379f7e19050e12
       size: 8948
     - path: target_map.graphml
-      md5: 5f4fc67e9241123c516c25f29d83c946
+      md5: cdd5e1c1aad89aece16a33f9670c5aed
       size: 2695878
-    - path: unified_dataset.pkl.gz
-      md5: b3b470f45f128cb75d64e34f5116ef46
-      size: 1260738
+    - path: unified_dataset.parquet
+      md5: 3c1c5b5180498fd3a6d74f5d43ef8201
+      size: 2066474
     outs:
     - path: danger_by_node_id.pkl.gz
-      md5: e4269414726925362f7101da332aacc5
+      md5: 25409564dd97f847de20af500edba898
       size: 20116
     - path: target_map_consolidated.graphml
-      md5: 465d8d52edcd91bf139a233b7c5cd95b
+      md5: 2d00d833b5bed41bb417d2f17c543671
       size: 2410335
   generate_heatmaps@2021:
     cmd: python ../../spoke/data_processing/08_generate_heatmaps.py
     deps:
     - path: danger_by_node_id.pkl.gz
-      md5: e4269414726925362f7101da332aacc5
+      md5: 25409564dd97f847de20af500edba898
       size: 20116
     - path: target_map_consolidated.graphml
-      md5: 465d8d52edcd91bf139a233b7c5cd95b
+      md5: 2d00d833b5bed41bb417d2f17c543671
       size: 2410335
   normalize_weather_data@2019_thru_2021:
     cmd: python ../../spoke/data_processing/01_normalizing_weather_data.py 2019-01-01
@@ -478,13 +469,13 @@ stages:
       nfiles: 4
     outs:
     - path: weather_data_normalized.pkl.gz
-      md5: d1ebd94fbf2db8fde771db6d6d8913bc
+      md5: 8ceeb65cf041812900b8a1cda2d4b470
       size: 26398
   create_map@2019_thru_2021:
     cmd: python ../../spoke/data_processing/00_create_map.py mnh_below_34th
     outs:
     - path: target_map.graphml
-      md5: 87919cda616f6df8adb3affaf02a2fc6
+      md5: a05cabc9846eae351f436e8fc42c13e8
       size: 2695878
   normalize_citibike_data@2019_thru_2021:
     cmd: python ../../spoke/data_processing/04_normalizing_citibike_data.py 2019-01-01
@@ -495,11 +486,11 @@ stages:
       size: 2464917000
       nfiles: 33
     - path: target_map.graphml
-      md5: 87919cda616f6df8adb3affaf02a2fc6
+      md5: a05cabc9846eae351f436e8fc42c13e8
       size: 2695878
     outs:
     - path: trip_data_normalized.pkl.gz
-      md5: ecb1aed7f324ee05111c46eee65b4206
+      md5: 386dab4e417f19897c04887b40df20de
       size: 155878202
   normalize_crash_data@2019_thru_2021:
     cmd: python ../../spoke/data_processing/02_normalizing_crash_data.py 2019-01-01
@@ -510,37 +501,37 @@ stages:
       size: 395108006
     outs:
     - path: crash_data_normalized.pkl.gz
-      md5: a34a1a7381d59bbf80567cb8120a63eb
+      md5: bb08a4c4fbdc11f18e494e50e90afdc1
       size: 1434809
   join_crash_data_to_nodes@2019_thru_2021:
     cmd: python ../../spoke/data_processing/03_joining_crash_data_to_nodes.py 100
     deps:
     - path: crash_data_normalized.pkl.gz
-      md5: a34a1a7381d59bbf80567cb8120a63eb
+      md5: bb08a4c4fbdc11f18e494e50e90afdc1
       size: 1434809
     - path: target_map.graphml
-      md5: 87919cda616f6df8adb3affaf02a2fc6
+      md5: a05cabc9846eae351f436e8fc42c13e8
       size: 2695878
     outs:
     - path: crash_data_normalized_with_node_graph.pkl.gz
-      md5: 225ec2dc0a813dd25413261c235b47de
+      md5: 2242a4a982ee39920a14aaa671b7a776
       size: 174515
   join_all_data@2019_thru_2021:
     cmd: python ../../spoke/data_processing/05_joining_all_data.py
     deps:
     - path: crash_data_normalized_with_node_graph.pkl.gz
-      md5: 225ec2dc0a813dd25413261c235b47de
+      md5: 2242a4a982ee39920a14aaa671b7a776
       size: 174515
     - path: trip_data_normalized.pkl.gz
-      md5: ecb1aed7f324ee05111c46eee65b4206
+      md5: 386dab4e417f19897c04887b40df20de
       size: 155878202
     - path: weather_data_normalized.pkl.gz
-      md5: d1ebd94fbf2db8fde771db6d6d8913bc
+      md5: 8ceeb65cf041812900b8a1cda2d4b470
       size: 26398
     outs:
-    - path: unified_dataset.pkl.gz
-      md5: bebd8c704cc45f18eafe93bbd3a3ea52
-      size: 123838707
+    - path: unified_dataset.parquet
+      md5: 08f3f1b27084c9ac404966f45346c5cb
+      size: 172435807
   associate_ctas_to_nodes@2019_thru_2021:
     cmd: python ../../spoke/data_processing/06_associate_ctas_to_nodes.py
     deps:
@@ -548,40 +539,151 @@ stages:
       md5: 0f6d2a4aaedc2e12f3db25f99d3f759e
       size: 2802360
     - path: target_map.graphml
-      md5: 87919cda616f6df8adb3affaf02a2fc6
+      md5: a05cabc9846eae351f436e8fc42c13e8
       size: 2695878
-    - path: unified_dataset.pkl.gz
-      md5: bebd8c704cc45f18eafe93bbd3a3ea52
-      size: 123838707
     outs:
     - path: node_id_census_tract_key.pkl.gz
-      md5: dc6ccf27d7c0e62ac2fcfe6d6f9b5d3b
+      md5: 8b2d50753b7c6b4ff41bab09d3cef99a
       size: 8948
   compute_danger@2019_thru_2021:
     cmd: python ../../spoke/data_processing/07_compute_danger.py
     deps:
     - path: node_id_census_tract_key.pkl.gz
-      md5: dc6ccf27d7c0e62ac2fcfe6d6f9b5d3b
+      md5: 8b2d50753b7c6b4ff41bab09d3cef99a
       size: 8948
     - path: target_map.graphml
-      md5: 87919cda616f6df8adb3affaf02a2fc6
+      md5: a05cabc9846eae351f436e8fc42c13e8
       size: 2695878
-    - path: unified_dataset.pkl.gz
-      md5: bebd8c704cc45f18eafe93bbd3a3ea52
-      size: 123838707
+    - path: unified_dataset.parquet
+      md5: 08f3f1b27084c9ac404966f45346c5cb
+      size: 172435807
     outs:
     - path: danger_by_node_id.pkl.gz
-      md5: e0340719fec2faeba9d1bbc0920f6bb2
+      md5: e817a4b55a76d784efee29fa3f9852bd
       size: 28058
     - path: target_map_consolidated.graphml
-      md5: 3febf45e5493c7f59ad31680313c5f60
+      md5: eed0d41e9e739d5d4b49f99175678a0f
       size: 2410335
   generate_heatmaps@2019_thru_2021:
     cmd: python ../../spoke/data_processing/08_generate_heatmaps.py
     deps:
     - path: danger_by_node_id.pkl.gz
-      md5: e0340719fec2faeba9d1bbc0920f6bb2
+      md5: e817a4b55a76d784efee29fa3f9852bd
       size: 28058
     - path: target_map_consolidated.graphml
-      md5: 3febf45e5493c7f59ad31680313c5f60
+      md5: eed0d41e9e739d5d4b49f99175678a0f
       size: 2410335
+  normalize_weather_data@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/01_normalizing_weather_data.py 2019-01-01
+      2021-11-01
+    deps:
+    - path: ../raw_data/weather/
+      md5: f67235592662850f4b0856767095f685.dir
+      size: 24203989
+      nfiles: 4
+    outs:
+    - path: weather_data_normalized.pkl.gz
+      md5: d1ebd94fbf2db8fde771db6d6d8913bc
+      size: 26398
+  create_map@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/00_create_map.py mnh
+    outs:
+    - path: target_map.graphml
+      md5: 0f25511d74f80421e86f8734c98ee281
+      size: 7433810
+  normalize_crash_data@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/02_normalizing_crash_data.py 2019-01-01
+      2021-11-01
+    deps:
+    - path: ../raw_data/Motor_Vehicle_Collisions_-_Crashes.csv
+      md5: 84bd8d0baf1943f1f3bfe319f420a176
+      size: 395108006
+    outs:
+    - path: crash_data_normalized.pkl.gz
+      md5: a34a1a7381d59bbf80567cb8120a63eb
+      size: 1434809
+  join_crash_data_to_nodes@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/03_joining_crash_data_to_nodes.py 100
+    deps:
+    - path: crash_data_normalized.pkl.gz
+      md5: a34a1a7381d59bbf80567cb8120a63eb
+      size: 1434809
+    - path: target_map.graphml
+      md5: 0f25511d74f80421e86f8734c98ee281
+      size: 7433810
+    outs:
+    - path: crash_data_normalized_with_node_graph.pkl.gz
+      md5: 6345cc092c367d378fc0d8b90e217ef9
+      size: 468874
+  normalize_citibike_data@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/04_normalizing_citibike_data.py 2019-01-01
+      2021-11-01 100 1000000
+    deps:
+    - path: ../raw_data/citibike/
+      md5: b6ae53a779ce6556f3a4587ebcab0f06.dir
+      size: 2464917000
+      nfiles: 33
+    - path: target_map.graphml
+      md5: 0f25511d74f80421e86f8734c98ee281
+      size: 7433810
+    outs:
+    - path: trip_data_normalized.pkl.gz
+      md5: e375d486c6da5c2490b8f39d18c51d4b
+      size: 253761206
+  join_all_data@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/05_joining_all_data.py
+    deps:
+    - path: crash_data_normalized_with_node_graph.pkl.gz
+      md5: 6345cc092c367d378fc0d8b90e217ef9
+      size: 468874
+    - path: trip_data_normalized.pkl.gz
+      md5: e375d486c6da5c2490b8f39d18c51d4b
+      size: 253761206
+    - path: weather_data_normalized.pkl.gz
+      md5: d1ebd94fbf2db8fde771db6d6d8913bc
+      size: 26398
+    outs:
+    - path: unified_dataset.parquet
+      md5: 44990e325814fd6d6894d555c527bb0f
+      size: 284603377
+  associate_ctas_to_nodes@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/06_associate_ctas_to_nodes.py
+    deps:
+    - path: ../raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp
+      md5: 0f6d2a4aaedc2e12f3db25f99d3f759e
+      size: 2802360
+    - path: target_map.graphml
+      md5: 0f25511d74f80421e86f8734c98ee281
+      size: 7433810
+    outs:
+    - path: node_id_census_tract_key.pkl.gz
+      md5: 3c3214d6cd2b33dabefac25bbd58b4c8
+      size: 24225
+  compute_danger@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/07_compute_danger.py
+    deps:
+    - path: node_id_census_tract_key.pkl.gz
+      md5: 3c3214d6cd2b33dabefac25bbd58b4c8
+      size: 24225
+    - path: target_map.graphml
+      md5: 0f25511d74f80421e86f8734c98ee281
+      size: 7433810
+    - path: unified_dataset.parquet
+      md5: 44990e325814fd6d6894d555c527bb0f
+      size: 284603377
+    outs:
+    - path: danger_by_node_id.pkl.gz
+      md5: 0a013161f2e0080346429d0e536d4b9c
+      size: 71783
+    - path: target_map_consolidated.graphml
+      md5: c0e76cad4767ea3eaaed5a7477e7aea8
+      size: 6839942
+  generate_heatmaps@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/08_generate_heatmaps.py
+    deps:
+    - path: danger_by_node_id.pkl.gz
+      md5: 0a013161f2e0080346429d0e536d4b9c
+      size: 71783
+    - path: target_map_consolidated.graphml
+      md5: c0e76cad4767ea3eaaed5a7477e7aea8
+      size: 6839942

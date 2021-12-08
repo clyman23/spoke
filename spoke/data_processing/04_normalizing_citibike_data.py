@@ -1,19 +1,24 @@
 from pathlib import Path
 from zipfile import ZipFile
 
+import dask
 import dask.dataframe as dd
 import numpy as np
 import osmnx as ox
 import pandas as pd
-from dask.diagnostics import ProgressBar
 from networkx import NetworkXNoPath
 from tqdm import tqdm
+from tqdm.dask import TqdmCallback
 from datetime import datetime
 
 INPUT_FILE_GRAPH = "target_map.graphml"
 INPUT_FILE_PREFIX = "../raw_data/citibike/"
 
 OUTPUT_FILE = "trip_data_normalized.pkl.gz"
+
+# This code is bottlenecked by Python code, not native code, so prefer
+# process-based parellelism to avoid the Python GIL.
+dask.config.set(scheduler='processes')
 
 def load_input_data(time_period_start, time_period_end):
     start_year = datetime.strptime(time_period_start, '%Y-%m-%d').year
@@ -22,13 +27,12 @@ def load_input_data(time_period_start, time_period_end):
     trip_df = pd.DataFrame()
     for year in range(start_year, end_year + 1):
         glob = f'{year}*.csv.zip'
-        for zipfile in Path(INPUT_FILE_PREFIX).glob(glob):
+        for zipfile in tqdm(list(Path(INPUT_FILE_PREFIX).glob(glob)), desc=f'Loading files for {year}...'):
             with ZipFile(zipfile) as zf:
                 for file in zf.infolist():
                     if file.filename.endswith(".csv") and not file.filename.startswith(
                         "__"
                     ):
-                        print(file.filename)
                         trip_df = pd.concat((trip_df, pd.read_csv(zf.open(file.filename))))
     return trip_df.query('starttime >= @time_period_start & stoptime <= @time_period_end').reset_index()
 
@@ -70,7 +74,7 @@ def pair_stations_with_nodes(all_stations, G, trip_threshold_dist_m):
         ]
     )
 
-    for i, station in tqdm(all_stations.iterrows(), total=all_stations.shape[0]):
+    for i, station in tqdm(all_stations.iterrows(), total=all_stations.shape[0], desc="Pairing stations with nodes..."):
         nn_id, dist = ox.distance.nearest_nodes(
             G, station.station_longitude, station.station_latitude, return_dist=True
         )
@@ -121,7 +125,7 @@ def generate_node_events_for_trips(trip_df_in_area, stations_with_nodes, G, trip
             for node_id in route
         )
 
-    with ProgressBar():
+    with TqdmCallback(desc='Associating nodes with trips...'):
         result = df.apply(
             associate_nodes, axis=1, meta=pd.Series(dtype=object)
         ).values.compute()
