@@ -6,7 +6,6 @@ from os.path import abspath, dirname, join
 
 INPUT_FILE_GRAPH = "target_map.graphml"
 INPUT_FILE_CENSUS_SHAPEFILE = "../raw_data/2010_Census_Tracts/geo_export_85c202c5-6ec9-493e-b0ec-a13efa26758d.shp"
-INPUT_FILE_DATASET = "unified_dataset.pkl.gz"
 OUTPUT_FILE = "node_id_census_tract_key.pkl.gz"
 
 

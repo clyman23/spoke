@@ -14,3 +14,4 @@ dependencies:
   - tqdm
   - dask
   - geoplot
+  - pyarrow

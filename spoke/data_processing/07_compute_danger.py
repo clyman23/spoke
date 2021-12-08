@@ -10,61 +10,39 @@ from spoke.graphing import saturate_nodes
 
 INPUT_FILE_GRAPH = "target_map.graphml"
 INPUT_FILE_CTA_LOOKUP = "node_id_census_tract_key.pkl.gz"
-INPUT_FILE_DATASET = "unified_dataset.pkl.gz"
+INPUT_FILE_DATASET = "unified_dataset.parquet"
 OUTPUT_FILE_DANGER = "danger_by_node_id.pkl.gz"
 OUTPUT_FILE_GRAPH = "target_map_consolidated.graphml"
 
 
 def process():
-    # BEGIN Liz's code
-
-    node_ids_crash_avg = pd.read_pickle(
+    node_ids_crash_avg = pd.read_parquet(
         INPUT_FILE_DATASET
-    )  # , usecols=['NODE_ID', 'IS_CRASH'])
-    # group by node ID and take average of IS_CRASH to have toy danger metric
-    node_id_crash_df = node_ids_crash_avg.groupby(by="NODE_ID").agg("mean")
-
-    node_id_census_tract = pd.read_pickle(INPUT_FILE_CTA_LOOKUP)
-
-    # merge on node ids: census tracts and avg crash
-    node_ids__crash_avg_census_tracts = node_id_crash_df.merge(
-        node_id_census_tract, how="left", left_index=True, right_on="osmid"
-    )
-
-    # rename columns to be clearer
-    col_names = {
-        "osmid": "NODE_ID",
-        "IS_CRASH": "CRASH_AVG",
-        "ct2010": "CENSUS_TRACT_ID",
-    }
-    node_ids__crash_avg_census_tracts.rename(columns=col_names, inplace=True)
-
-    node_ids__crash_avg_census_tracts_clean = node_ids__crash_avg_census_tracts.loc[
-        node_ids__crash_avg_census_tracts["CRASH_AVG"] < 1, :
-    ]
-
-    # BEGIN Max's code
-    crash_df = node_ids__crash_avg_census_tracts_clean
+    , columns=['NODE_ID', 'IS_CRASH'])
+    node_id_cta_associations = pd.read_pickle(INPUT_FILE_CTA_LOOKUP)
     G = ox.io.load_graphml(INPUT_FILE_GRAPH)
 
-    crash_avg_by_node = crash_df["CRASH_AVG"]
-
+    # Compute the average number of crashes per node
+    crash_avg_by_node = node_ids_crash_avg.groupby(by="NODE_ID").agg("mean").IS_CRASH.rename("CRASH_AVG")
+    # Remove rows where we only had an example of a crash but no examples of trips
+    crash_avg_by_node = crash_avg_by_node.loc[crash_avg_by_node < 1]
     crash_avg_by_node = saturate_nodes(G, crash_avg_by_node)
 
     scaler = sklearn.preprocessing.PowerTransformer(method="box-cox")
     df = pd.DataFrame(crash_avg_by_node)
+    df_gt_0 = df[df.CRASH_AVG > 0]
     scaled_crash_avg_by_node = pd.Series(
-        scaler.fit_transform(df[df.CRASH_AVG > 0])[:, 0]
+        scaler.fit_transform(df_gt_0)[:, 0],
+        index=df_gt_0.index
     )
-    scaled_crash_avg_by_node.index = df[df.CRASH_AVG > 0].index
 
+    # Offset the scaled danger to be >0
     danger_by_node = scaled_crash_avg_by_node + np.abs(scaled_crash_avg_by_node.min())
     danger_by_node = saturate_nodes(G, danger_by_node)
 
     Gp = ox.simplification.consolidate_intersections(
         ox.projection.project_graph(G, to_crs=None), tolerance=25
     )
-    node_id_cta_associations = node_id_census_tract
 
     def normalize_id_format(ids):
         if isinstance(ids, str):
