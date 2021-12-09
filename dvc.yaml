@@ -62,6 +62,7 @@ stages:
         - weather_data_normalized.pkl.gz
         - crash_data_normalized_with_node_graph.pkl.gz
         - trip_data_normalized.pkl.gz
+        - target_map.graphml
       outs:
         - unified_dataset.parquet
   associate_ctas_to_nodes:
