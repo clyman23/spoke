@@ -98,3 +98,15 @@ stages:
       deps:
         - target_map_consolidated.graphml
         - danger_by_node_id.pkl.gz
+  prepare_training_data:
+    foreach: ${config}
+    do:
+      desc: Prepare unified dataset for use in ML algorithms and dump out training, test, and eval splits
+      cmd: python ${sr}/09_prepare_training_data.py ${item.random_state} ${item.train_ratio} ${item.validation_ratio} ${item.test_ratio}
+      wdir: pipeline_data/${key}
+      deps:
+        - unified_dataset.parquet
+      outs:
+        - train.parquet
+        - eval.parquet
+        - test.parquet

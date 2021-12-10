@@ -702,3 +702,88 @@ stages:
     - path: target_map_consolidated.graphml
       md5: c0e76cad4767ea3eaaed5a7477e7aea8
       size: 6839942
+  prepare_training_data@2019:
+    cmd: python ../../spoke/data_processing/09_prepare_training_data.py 42 0.6 0.2
+      0.2
+    deps:
+    - path: unified_dataset.parquet
+      md5: 877ae64aaff10665ba95426fc831b60e
+      size: 19743322
+    outs:
+    - path: eval.parquet
+      md5: b6c8dc1f351fe72960d120fd14ef60ff
+      size: 9136586
+    - path: test.parquet
+      md5: 20556f2e36b949be9f14733bc05c2496
+      size: 9136078
+    - path: train.parquet
+      md5: 88336adc38b2a9a14fabddae14e6a62a
+      size: 25620354
+  prepare_training_data@2019_thru_2021:
+    cmd: python ../../spoke/data_processing/09_prepare_training_data.py 42 0.6 0.2
+      0.2
+    deps:
+    - path: unified_dataset.parquet
+      md5: 7f084a095fee59bbba0ed14e27f1ad8b
+      size: 203083300
+    outs:
+    - path: eval.parquet
+      md5: d8c8e4316ee06f8617258c52ff7b2fe4
+      size: 107804374
+    - path: test.parquet
+      md5: b5e8492ba7d14a702e4c819b0987341d
+      size: 107583923
+    - path: train.parquet
+      md5: e55ad8d8be4853c017a7228eb5591259
+      size: 322249308
+  prepare_training_data@2021:
+    cmd: python ../../spoke/data_processing/09_prepare_training_data.py 42 0.6 0.2
+      0.2
+    deps:
+    - path: unified_dataset.parquet
+      md5: f77502d56ca25bb481aaccc644c214d1
+      size: 2373881
+    outs:
+    - path: eval.parquet
+      md5: 695da1e36d6f88dad4129e3b33f7cfbf
+      size: 911160
+    - path: test.parquet
+      md5: e80312c4bc2032341a4aedeab98fb558
+      size: 911177
+    - path: train.parquet
+      md5: a1b18e60e405c322434a7c00a967e86c
+      size: 2608316
+  prepare_training_data@2020:
+    cmd: python ../../spoke/data_processing/09_prepare_training_data.py 42 0.6 0.2
+      0.2
+    deps:
+    - path: unified_dataset.parquet
+      md5: 3cfe6d31737217be4042f51f7b8d1c8e
+      size: 20163714
+    outs:
+    - path: eval.parquet
+      md5: be5acab76d3093038900128a389c23fd
+      size: 9192010
+    - path: test.parquet
+      md5: aab496a7275f1eb71939d5f30870332b
+      size: 9204716
+    - path: train.parquet
+      md5: e9b35ac4c577078cdf2ea54165dfa7e1
+      size: 25841142
+  prepare_training_data@2019_thru_2021_all_mnh:
+    cmd: python ../../spoke/data_processing/09_prepare_training_data.py 42 0.6 0.2
+      0.2
+    deps:
+    - path: unified_dataset.parquet
+      md5: 60f2b3f385ea1723be0fa60d2fa697e9
+      size: 321591083
+    outs:
+    - path: eval.parquet
+      md5: 1aa0726686f21b7affbfe30440161bea
+      size: 134215616
+    - path: test.parquet
+      md5: fa5a185bfc135d6cd0b3e873b984a9ce
+      size: 134294401
+    - path: train.parquet
+      md5: fb7f60cc15e61a44cd69ada8171d66e1
+      size: 401771390
