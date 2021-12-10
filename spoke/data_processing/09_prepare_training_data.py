@@ -59,6 +59,11 @@ def process(random_state, train_ratio, validation_ratio, test_ratio):
             "NUMBER OF CYCLIST KILLED",
             "NUMBER OF MOTORIST INJURED",
             "NUMBER OF MOTORIST KILLED",
+            # Columns that are extremely linearly depend on other columns:
+            "TOBS",
+            # Columns that we'll derive new values for below
+            "TMAX",
+            "TMIN",
         ]
     )
 
@@ -66,12 +71,16 @@ def process(random_state, train_ratio, validation_ratio, test_ratio):
         X.EVENT_DATE + " " + X.EVENT_TIME, infer_datetime_format=True
     )
 
-    # Convert EVENT_TIME to be the number of seconds since midnight of that day that the crash occurred.
-    seconds_since_midnight = (event_dt - event_dt.dt.normalize()).dt.total_seconds()
-    X.EVENT_TIME = seconds_since_midnight
+    # Convert EVENT_TIME to be the number of minutes since midnight of that day that the event occurred.
+    minutes_since_midnight = ((event_dt - event_dt.dt.normalize()).dt.total_seconds() / 60).round()
+    X.EVENT_TIME = minutes_since_midnight
 
     # Convert EVENT_DATE to be the day of the year
     X.EVENT_DATE = event_dt.dt.day_of_year
+
+    # TMAX, TOBS, and TMIN are all extremely correlated to one another and
+    # probably aren't contributing much signal that just the average temperature would.
+    X['TAVG'] = (unified_df.TMAX + unified_df.TMIN) / 2
 
     return train_validation_test_split(
         X,

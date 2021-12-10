@@ -728,14 +728,14 @@ stages:
       size: 203083300
     outs:
     - path: eval.parquet
-      md5: d8c8e4316ee06f8617258c52ff7b2fe4
-      size: 107804374
+      md5: 15121d9dea35f1d5222608be2599a1e0
+      size: 74137542
     - path: test.parquet
-      md5: b5e8492ba7d14a702e4c819b0987341d
-      size: 107583923
+      md5: 0a71a1679792b558fc94f634f6c73343
+      size: 74119796
     - path: train.parquet
-      md5: e55ad8d8be4853c017a7228eb5591259
-      size: 322249308
+      md5: 52fa90ea614dbb6452fe45f60a2cf4f6
+      size: 221774504
   prepare_training_data@2021:
     cmd: python ../../spoke/data_processing/09_prepare_training_data.py 42 0.6 0.2
       0.2
