@@ -8,5 +8,8 @@
 */target_map_consolidated.graphml
 */trip_data_normalized.pkl.gz
 */unified_dataset.parquet
+*/train.parquet
+*/eval.parquet
+*/test.parquet
 */weather_data_normalized.pkl.gz
 */cache/
