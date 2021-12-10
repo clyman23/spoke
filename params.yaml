@@ -15,6 +15,12 @@ config:
     # The number of trips to sample from the overall trip dataset when computing
     # routes
     trip_sample_size: 100_000
+    # Random state to use for random things
+    random_state: 42
+    # Ratios to use for generating training data. Must sum to 1
+    train_ratio: 0.6
+    validation_ratio: 0.2
+    test_ratio: 0.2
   '2020':
     time_period_start: '2020-01-01'
     time_period_end: '2020-12-31'
@@ -22,6 +28,10 @@ config:
     trip_threshold_dist_m: 100
     map_clipping_boundary: mnh_below_34th
     trip_sample_size: 100_000
+    random_state: 42
+    train_ratio: 0.6
+    validation_ratio: 0.2
+    test_ratio: 0.2
   '2021':
     time_period_start: '2021-01-01'
     time_period_end: '2021-11-01'
@@ -29,6 +39,10 @@ config:
     trip_threshold_dist_m: 100
     map_clipping_boundary: mnh_below_34th
     trip_sample_size: 10_000
+    random_state: 42
+    train_ratio: 0.6
+    validation_ratio: 0.2
+    test_ratio: 0.2
   '2019_thru_2021':
     time_period_start: '2019-01-01'
     time_period_end: '2021-11-01'
@@ -36,6 +50,10 @@ config:
     trip_threshold_dist_m: 100
     map_clipping_boundary: mnh_below_34th
     trip_sample_size: 1_000_000
+    random_state: 42
+    train_ratio: 0.6
+    validation_ratio: 0.2
+    test_ratio: 0.2
   '2019_thru_2021_all_mnh':
     time_period_start: '2019-01-01'
     time_period_end: '2021-11-01'
@@ -43,3 +61,7 @@ config:
     trip_threshold_dist_m: 100
     map_clipping_boundary: mnh
     trip_sample_size: 1_000_000
+    random_state: 42
+    train_ratio: 0.6
+    validation_ratio: 0.2
+    test_ratio: 0.2
